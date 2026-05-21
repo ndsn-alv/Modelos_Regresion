@@ -1,9 +1,29 @@
 ---
 title: "Análisis de Regresión: Gasto Calórico"
-author: "Nicolás de Silva Nacenta"
+author: "Nicolás de Silva Nacenta, Israel Rodríguez Donato, Andrés Manuel Roldán Navarro"
 date: "29 de mayo de 2026"
 output: pdf_document
 ---
+
+```{r}
+  knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+
+library(data.table)
+library(ggplot2)
+library(GGally)
+library(knitr)
+
+moda <- function(x) {
+  x <- x[!is.na(x)]
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+```
 
 # 1. Introducción
 
@@ -23,21 +43,72 @@ Analizar el número de calorías quemadas en función de variables explicativas.
 Descripción de la base `calorias.csv`.
 
 ## 2.2. Variables
-- Calories (respuesta)
-- Gender, Age, Height, Weight, BMI, Duration, Heart_Rate, Body_Temp
+- Calories: Calorias
+- Gender: Género
+- Age: Edad
+_ Height: Altura (cm)
+- Weight: Peso (Kg)
+- BMI: Índice de masa corporal ($\frac{Kg}{m^2}$)
+- Duration: Duración de actividad física (min)
+- Heart_Rate: Frecuencia cardíaca (lpm)
+- Body_Temp: Temperatura corporal (C°)
 
-## 2.3. Carga de datos
+## 2.3. Carga de datos y visualización de la base de datos
 
 ```{r, echo=FALSE}
-calories <- read.csv("calorias.csv")
+calories <- read.csv("https://raw.githubusercontent.com/ndsn-alv/Modelos_Regresion/main/Data/calorias.csv")
+
+kable(
+  head(calories, n = 10),
+  caption = "10 observaciones de la base",
+  digits = 2
+)
 
 ```
 
-# 3. Análisis exploratorio de datos
+# 3. Análisis descriptivo de datos
 
 ## 3.1. Estadístico descriptivos
 
+```{r}
+
+cal_desc <- data.frame(
+  Media = sapply(calories[,-2], mean, na.rm = TRUE),
+  Mediana = sapply(calories[,-2], median, na.rm = TRUE),
+  Moda = sapply(calories[,-2], moda),
+  Varianza = sapply(calories[,-2], var, na.rm = TRUE),
+  Desviacion_Estandar = sapply(calories[,-2], sd, na.rm = TRUE)
+)
+
+kable(
+  cal_desc,
+  caption = "Estadísticos descriptivos",
+  digits = 2
+)
+
+```
+
 ## 3.2. Visualización de variables
+
+```{r}
+par(mfrow = c(3,3))
+
+for (v in colnames(calories[,-2])) {
+  hist(calories[[v]],
+       main = paste("Histrograma de", v),
+       xlab = v,
+       col = "lightgray",
+       border = "black")
+}
+
+barplot(table(calories$Gender),
+        main = "Frecuencia de Género",
+        xlab = "Género",
+        ylab = "Frecuencia",
+        col = "lightgray",
+        border = "black")
+
+```
 
 # 4. Preprocesamiento de datos
 

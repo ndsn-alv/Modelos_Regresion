@@ -105,7 +105,8 @@ barplot(table(calories$Gender),
         xlab = "Género",
         ylab = "Frecuencia",
         col = "lightgray",
-        border = "black")
+        border = "black"
+)
 
 ```
 
@@ -113,31 +114,32 @@ barplot(table(calories$Gender),
 corrplot(cor(calories[,-2]),
          method = "number",
          type = "upper",
-         tl.col = "black"
+         tl.col = "black",
+         title = "Matriz de correlación"
 )
 ```
 
 # 4. Modelo de Regresión Lineal Simple
 
-## 5.1. Selección de variable explicativa
+## 4.1. Selección de variable explicativa
+
+## 4.2. Ajuste del modelo
+
+## 4.3. Evaluación del modelo
+
+## 4.4. Supuestos del modelo
+
+## 4.5. Intervalos de confianza (95 %)
+
+## 4.6. Intervalos para respuesta media y predicción
+
+# 5. Modelo de Regresión Lineal Múltiple
+
+## 5.1. Selección de variables
+
+
 
 ## 5.2. Ajuste del modelo
-
-## 5.3. Evaluación del modelo
-
-## 5.4. Supuestos del modelo
-
-## 5.5. Intervalos de confianza (95 %)
-
-## 5.6. Intervalos para respuesta media y predicción
-
-# 6. Modelo de Regresión Lineal Múltiple
-
-## 6.1. Selección de variables
-
-
-
-## 6.2. Ajuste del modelo
 
 ```{r}
 mod <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)
@@ -155,7 +157,7 @@ kable(
 
 ```
 
-## 6.3. Evaluación de multicolinealidad del modelo
+## 5.3. Evaluación de multicolinealidad del modelo
 
 ```{r}
 
@@ -212,13 +214,15 @@ mods_vifs <- data.frame(
   Modelo_4 = c(1.021, 1.021, "...", "...", 2.364, 2.387),
   Modelo_5 = c(1.040, "...", 1.042, "...", 2.376, 2.386),
   Modelo_6 = c(1.090, "...", "...", 1.095, 2.384, 2.378),
-  MOdelo_7 = c(1.012, "...", "...", "...", 2.338, 2.356)
+  Modelo_7 = c(1.012, "...", "...", "...", 2.338, 2.356)
 )
 
 kable(
   mods_vifs,
   caption = "Nuevos VIFs"
 )
+
+## AGREGAR AIC de los 7 modelos
 
 ```
 
@@ -241,12 +245,12 @@ kable(
 
 ```
 
-## 6.4. Análisis de residuos
+## 5.4. Análisis de residuos
 
-# 7. Comparación de modelos
+# 6. Comparación de modelos
 
-## 7.1. Métricas de ajuste
+## 6.1. Métricas de ajuste
 
-## 7.2. Interpretación
+## 6.2. Interpretación
 
-# 8. Conclusiones
+# 7. Conclusiones

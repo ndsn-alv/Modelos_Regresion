@@ -4,9 +4,10 @@ author: "Nicolás de Silva Nacenta, Israel Rodríguez Donato, Andrés Manuel Rol
 date: "29 de mayo de 2026"
 output: pdf_document
 ---
+  
+```{r setup, include = F}
 
-```{r}
-  knitr::opts_chunk$set(
+knitr::opts_chunk$set(
   echo = FALSE,
   warning = FALSE,
   message = FALSE
@@ -16,6 +17,7 @@ library(data.table)
 library(ggplot2)
 library(GGally)
 library(knitr)
+library(corrplot)
 
 moda <- function(x) {
   x <- x[!is.na(x)]
@@ -39,10 +41,7 @@ Analizar el número de calorías quemadas en función de variables explicativas.
 
 # 2. Descripción de los datos
 
-## 2.1. Fuente de datos
-Descripción de la base `calorias.csv`.
-
-## 2.2. Variables
+## 2.1. Variables
 - Calories: Calorias
 - Gender: Género
 - Age: Edad
@@ -53,7 +52,7 @@ _ Height: Altura (cm)
 - Heart_Rate: Frecuencia cardíaca (lpm)
 - Body_Temp: Temperatura corporal (C°)
 
-## 2.3. Carga de datos y visualización de la base de datos
+## 2.2. Carga de datos y visualización de la base de datos
 
 ```{r, echo=FALSE}
 calories <- read.csv("https://raw.githubusercontent.com/ndsn-alv/Modelos_Regresion/main/Data/calorias.csv")
@@ -95,7 +94,7 @@ par(mfrow = c(3,3))
 
 for (v in colnames(calories[,-2])) {
   hist(calories[[v]],
-       main = paste("Histrograma de", v),
+       main = paste("Histograma de", v),
        xlab = v,
        col = "lightgray",
        border = "black")
@@ -110,9 +109,15 @@ barplot(table(calories$Gender),
 
 ```
 
-# 4. Preprocesamiento de datos
+```{r}
+corrplot(cor(calories[,-2]),
+         method = "number",
+         type = "upper",
+         tl.col = "black"
+)
+```
 
-# 5. Modelo de Regresión Lineal Simple
+# 4. Modelo de Regresión Lineal Simple
 
 ## 5.1. Selección de variable explicativa
 
@@ -130,11 +135,113 @@ barplot(table(calories$Gender),
 
 ## 6.1. Selección de variables
 
+
+
 ## 6.2. Ajuste del modelo
 
-## 6.3. Evaluación del modelo
+```{r}
+mod <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)
+mod_summary <- summary(mod)
 
-## 6.4. Diagnóstico de supuestos
+coeffs <- data.frame(
+  mod_summary$coefficients
+)
+
+kable(
+  coeffs,
+  caption = "Resumen del modelo",
+  digits = 6
+)
+
+```
+
+## 6.3. Evaluación de multicolinealidad del modelo
+
+```{r}
+
+mod_vif <- data.frame(
+  VIF = vif(mod)
+)
+
+kable(
+  mod_vif,
+  caption = "Valores de Inflación de la Varianza (VIF)"
+)
+```
+
+Podemos ver que el modelo tiene multicolinealidad fuerte en las variables *Height*, *Weight* y *BMI*, donde directamente el índice de masa corporal es una relación entre la altura y el peso lo cual explica la alta correlación entre este grupo de variables. Por otro lado, variables como *Duration*, *Heart_Rate* y *Body_Temp* presentan multicolinealidad moderada. Igualmente por la matriz de correlación observamos una correlación fuerte entre este otro grupo de variables. Por último, la variable *Age* mantiene el VIF mas pequeño, consistente con su nula o débil correlación con el resto de las variables.
+
+Buscamos ajustar un nuevo modelo mediante la eliminación de algunas de las variables de grupos correlacionados. Como primer intento elimaremos una variable del grupo de duración, frecuencia cardíaca y temperatura corporal. Como resultado obtenemos los nuevos VIFs.
+
+```{r}
+mod1 <- lm(Calories ~ Age + Height + Weight + BMI + Heart_Rate + Body_Temp, calories)
+mod2 <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Body_Temp, calories)
+mod3 <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate, calories)
+
+mods_vifs <- data.frame(
+  Variable = c("Age", "Height", "Weight", "BMI", "Duration", "Heart_Rate", "Body_Temp"),
+  Modelo_1 = c(1.093, 134.024, 217.516, 27.726, "...", 2.397, 2.434),
+  Modelo_2 = c(1.113, 133.558, 216.875, 27.603, 5.665, "...", 5.736),
+  Modelo_3 = c(1.078, 133.349, 216.433, 27.530, 4.058, 4.045, "...")
+)
+
+
+kable(
+  mods_vifs,
+  caption = "Nuevos VIFs"
+)
+```
+
+Por cuestiones que se discutiran en la siguiente sección escogemos el modelo que excluye la variable *Duration*. Ahora nos enfocamos en el otro grupo de variables relacionados con el índice de masa corporal.
+
+```{r}
+
+mod1 <- lm(Calories ~ Age + Weight + BMI + Heart_Rate + Body_Temp, calories)
+mod2 <- lm(Calories ~ Age + Height + BMI + Heart_Rate + Body_Temp, calories)
+mod3 <- lm(Calories ~ Age + Height + Weight + Heart_Rate + Body_Temp, calories)
+mod4 <- lm(Calories ~ Age + Height + Heart_Rate + Body_Temp, calories)
+mod5 <- lm(Calories ~ Age + Weight + Heart_Rate + Body_Temp, calories)
+mod6 <- lm(Calories ~ Age + BMI + Heart_Rate + Body_Temp, calories)
+mod7 <- lm(Calories ~ Age + Heart_Rate + Body_Temp, calories)
+
+mods_vifs <- data.frame(
+  Variable = c("Age", "Height", "Weight", "BMI", "Heart_Rate", "Body_Temp"),
+  Modelo_1 = c(1.092, "...", 2.156, 2.266, 2.387, 2.387),
+  Modelo_2 = c(1.092, 1.328, "...", 1.425, 2.388, 2.392),
+  Modelo_3 = c(1.084, 10.956, 11.181, "...", 2.381, 2.387),
+  Modelo_4 = c(1.021, 1.021, "...", "...", 2.364, 2.387),
+  Modelo_5 = c(1.040, "...", 1.042, "...", 2.376, 2.386),
+  Modelo_6 = c(1.090, "...", "...", 1.095, 2.384, 2.378),
+  MOdelo_7 = c(1.012, "...", "...", "...", 2.338, 2.356)
+)
+
+kable(
+  mods_vifs,
+  caption = "Nuevos VIFs"
+)
+
+```
+
+A excepción del modelo 3, ya ninguna presenta multicolinealidad. Pero tomando en cuenta que el modelo 7 consiste del AIC mas bajo en comparación con los demás nos indica que el mejor modelo que mejor explica la quema de calorias es aquel excluyendo las variables: *Duration*, *Height*, *Weight* y *BMI*. Ajustando el modelo obtenemos los siguientes resultados.
+
+```{r}
+
+mod <- lm(Calories ~ Age + Heart_Rate + Body_Temp, calories)
+mod_summary <- summary(mod)
+
+coeffs <- data.frame(
+  mod_summary$coefficients
+)
+
+kable(
+  coeffs,
+  caption = "Resumen del nuevo modelo",
+  digits = 6
+)
+
+```
+
+## 6.4. Análisis de residuos
 
 # 7. Comparación de modelos
 

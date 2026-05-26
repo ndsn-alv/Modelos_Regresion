@@ -18,6 +18,10 @@ library(ggplot2)
 library(GGally)
 library(knitr)
 library(corrplot)
+library(MASS)
+library(dplyr)
+library(nortest)
+library(lmtest)
 
 moda <- function(x) {
   x <- x[!is.na(x)]
@@ -29,12 +33,10 @@ moda <- function(x) {
 
 # 1. Introducción
 
-## 1.1. Contexto
-
-## 1.2. Objetivo general
+## 1.1. Objetivo general
 Analizar el número de calorías quemadas en función de variables explicativas.
 
-## 1.3. Objetivos específicos
+## 1.2. Objetivos específicos
 - Ajustar un modelo de regresión lineal simple.
 - Ajustar un modelo de regresión lineal múltiple.
 - Comparar ambos modelos.
@@ -101,8 +103,8 @@ for (v in colnames(calories[,-2])) {
 }
 
 barplot(table(calories$Gender),
-        main = "Frecuencia de Género",
-        xlab = "Género",
+        main = "Frecuencia de Gender",
+        xlab = "Gender",
         ylab = "Frecuencia",
         col = "lightgray",
         border = "black"
@@ -110,14 +112,47 @@ barplot(table(calories$Gender),
 
 ```
 
+Matriz de correlación:
+
 ```{r}
-corrplot(cor(calories[,-2]),
+
+cal_male <- calories %>% filter(Gender == "male")
+cal_male <- cal_male[,-2]
+
+cal_female <- calories %>% filter(Gender == "female")
+cal_female <- cal_female[,-2]
+
+par(mfrow = c(1,2),
+    mar = c(1,1,3,1))
+
+corrplot(cor(cal_male),
          method = "number",
          type = "upper",
          tl.col = "black",
-         title = "Matriz de correlación"
-)
+         tl.cex = 0.7,  
+         number.cex = 0.6,
+         title = "Hombres",
+         mar = c(0,0,2,0))
+
+corrplot(cor(cal_female),
+         method = "number",
+         type = "upper",
+         tl.col = "black",
+         tl.cex = 0.7,
+         number.cex = 0.6,
+         title = "Mujeres",
+         mar = c(0,0,2,0))
+         
 ```
+Se pueden observar tres grupos de variables correlacionadas entre si para ambos género. Consisten en:
+
+- Grupo 1: *Calories, Duration, Heart_Rate, Body_Temp*
+- Grupo 2: *Height, Weight, BMI*
+- Grupo 3: *Age*
+
+Se puede ver que la edad no esta correlacionada con ninguna de las otras variables. Podria no ser significante para la quema de calorias. La altura, peso e índice de masa corporal son caracateristicas físicas de la persona en cuestión, además el índice de masa corporal es directamente calculada usando las otras dos variables. Por último, la duración, frecuencia cardíaca y temperatura corporal son consecuencia del ejercicio en cuestión lo cual nos lleva a pensar que son los que mas afectan a la quema de calorias. 
+
+Analizando las matrices notamos que entre ambos géneros no existe gran diferencia en la correlación lo cual podría explicar que ningun género presenta ventaja sobre el otro a la hora de la quema de calorias.
 
 # 4. Modelo de Regresión Lineal Simple
 
@@ -137,13 +172,16 @@ corrplot(cor(calories[,-2]),
 
 ## 5.1. Selección de variables
 
+Para una selección inicial definimos un modelo utilizando todas las variables y mediante un proceso de stepwise AIC hacia atras, obtenemos un AIC inicial de 965.38. Luego, definiendo un modelo nulo, mediante stepwise AIC hacia adelante, obtenemos un AIC inicial de 1666.86.
 
+En nuestro caso el modelo con el AIC mas bajo resulta ser ajustando el modelo explicando las calorias utilizando todas las variables numéricas y eliminando el género. Obteniendo un valor AIC de 963.42. Esto podria ser ya que como vimos en las matrices de correlación que el género no inflye fuertemente en la quema de calorias. 
 
 ## 5.2. Ajuste del modelo
 
 ```{r}
 mod <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)
 mod_summary <- summary(mod)
+
 
 coeffs <- data.frame(
   mod_summary$coefficients
@@ -156,6 +194,11 @@ kable(
 )
 
 ```
+Adicionalmente obtenemos estas caracteristicas:
+
+- Multiple R-squared: 0.9723
+- Adjusted R-squared: 0.9713
+- p-valor conjunto: $<2.2\times 10^{-16}$
 
 ## 5.3. Evaluación de multicolinealidad del modelo
 
@@ -179,6 +222,10 @@ Buscamos ajustar un nuevo modelo mediante la eliminación de algunas de las vari
 mod1 <- lm(Calories ~ Age + Height + Weight + BMI + Heart_Rate + Body_Temp, calories)
 mod2 <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Body_Temp, calories)
 mod3 <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate, calories)
+mod4 <- lm(Calories ~ Age + Height + Weight + BMI  + Body_Temp, calories)
+mod5 <- lm(Calories ~ Age + Height + Weight + BMI + Duration, calories)
+mod6 <- lm(Calories ~ Age + Height + Weight + BMI + Heart_Rate, calories)
+mod7 <- lm(Calories ~ Age + Height + Weight + BMI, calories)
 
 mods_vifs <- data.frame(
   Variable = c("Age", "Height", "Weight", "BMI", "Duration", "Heart_Rate", "Body_Temp"),
@@ -192,9 +239,15 @@ kable(
   mods_vifs,
   caption = "Nuevos VIFs"
 )
-```
 
-Por cuestiones que se discutiran en la siguiente sección escogemos el modelo que excluye la variable *Duration*. Ahora nos enfocamos en el otro grupo de variables relacionados con el índice de masa corporal.
+```
+Obtenemos los siguientes AICs:
+
+- Modelo 1: 1802.54
+- Modelo 2: 1645.309
+- Modelo 3: 1577.17
+
+El modelo 3 es el que menor AIC tiene, sin embargo por cuestiones que se discutiran en la siguiente sección escogemos el modelo que excluye la variable *Duration* (Modelo 1). Ahora nos enfocamos en el otro grupo de variables relacionados con el índice de masa corporal.
 
 ```{r}
 
@@ -205,6 +258,15 @@ mod4 <- lm(Calories ~ Age + Height + Heart_Rate + Body_Temp, calories)
 mod5 <- lm(Calories ~ Age + Weight + Heart_Rate + Body_Temp, calories)
 mod6 <- lm(Calories ~ Age + BMI + Heart_Rate + Body_Temp, calories)
 mod7 <- lm(Calories ~ Age + Heart_Rate + Body_Temp, calories)
+
+### NOTAS
+
+# Un modelo en el que se elimina Duration y se deja Heart_Rate y Body_temp cumple normalidad
+# Un modelo en el que se elimina Duration y Heart_Rate y se deja Body_temp cumple homocedasticidad
+# Ambos cumplen autocorrelacion
+# Boxcox no mejora los supuestos (debe ser alguna cuestion polinomial)
+
+###
 
 mods_vifs <- data.frame(
   Variable = c("Age", "Height", "Weight", "BMI", "Heart_Rate", "Body_Temp"),
@@ -222,11 +284,18 @@ kable(
   caption = "Nuevos VIFs"
 )
 
-## AGREGAR AIC de los 7 modelos
-
 ```
+AICs de los modelos:
 
-A excepción del modelo 3, ya ninguna presenta multicolinealidad. Pero tomando en cuenta que el modelo 7 consiste del AIC mas bajo en comparación con los demás nos indica que el mejor modelo que mejor explica la quema de calorias es aquel excluyendo las variables: *Duration*, *Height*, *Weight* y *BMI*. Ajustando el modelo obtenemos los siguientes resultados.
+- Modelo 1: 1804.49
+- Modelo 2: 1804.60
+- Modelo 3: 1804.36
+- Modelo 4: 1802.60
+- Modelo 5: 1802.52
+- Modelo 6: 1802.63
+- Modelo 7: 1800.64
+
+A excepción del modelo 3, ya ninguna presenta multicolinealidad. Pero el modelo 7 consiste del AIC mas bajo en comparación con los demás nos indica que el mejor modelo que mejor explica la quema de calorias es aquel excluyendo las variables: *Duration*, *Height*, *Weight* y *BMI*. Ajustando el modelo obtenemos los siguientes resultados.
 
 ```{r}
 
@@ -243,14 +312,86 @@ kable(
   digits = 6
 )
 
+sd(residuals(mod))
 ```
+- Multiple R-squared: 0.8902
+- Adjusted R-squared: 0.8885
+- P-valor conjunto: $<2.2\times 10^{-16}$
 
 ## 5.4. Análisis de residuos
 
-# 6. Comparación de modelos
+En la sección anterior se mencionó que se utilizaba el modelo que excluía la variable *Duration* con todo y que tenia el mayor AIC de los tres modelos. La razón es por los supuestos. Era el único modelo que cumple con los supuestos de normalidad y autocorrelación en los residuos. Sin embargo, todavía tenemos heterocedasticidad.
 
-## 6.1. Métricas de ajuste
+**Normalidad.** Se evalúa si los residuales siguen una distribución aproximadamente normal. Mediante un QQ-plot, un histograma de frecuencias y un boxplot, para una interpretación visual. Se usan las pruebas de normalidad de Lilliefors, Cramér-von Mises, Anderson-Darling y Shapiro-Wilk.
 
-## 6.2. Interpretación
+```{r}
+par(mfrow = c(1, 3))
 
-# 7. Conclusiones
+qqnorm(residuals(mod))
+qqline(residuals(mod))
+
+hist(residuals(mod), breaks = 20)
+
+boxplot(residuals(mod), main = "Boxplot")
+
+
+norm_tests <- data.table(
+  Test = c(
+    "Lilliefors", 
+    "Cramér-von Mises", 
+    "Anderson-Darling", 
+    "Shapiro-Wilk"
+  ),
+  p_value = c(
+    lillie.test(mod$residuals)$p.value,
+    cvm.test(mod$residuals)$p.value,
+    ad.test(mod$residuals)$p.value,
+    shapiro.test(mod$residuals)$p.value
+  )
+)
+
+kable(
+  norm_tests,
+  caption = "Pruebas de normalidad",
+  digits = 4
+)
+```
+
+**Homocedasticidad**. Se muestra el gráfico de dispersión de residuales contra valores ajustados, así como las pruebas formales de homocedasticidad.
+
+```{r}
+df <- data.frame(
+  fitted = fitted(mod),
+  resid = residuals(mod)
+)
+
+ggplot(df, aes(x = fitted, y = resid)) +
+  geom_point()
+
+hc_test <- data.frame(
+  Test = c("Breusch-Pagan", "NCV"),
+  p_values = c(bptest(mod)$p.value, ncvTest(mod)$p)
+)
+
+kable(
+  hc_test,
+  caption = "Pruebas de homocedasticidad",
+  digits = 4
+)
+
+```
+
+**No correlación**. Finalmente, se evalúa la presencia de autocorrelación en los residuales mediante la prueba correspondiente.
+
+```{r}
+autocor_test <- data.frame(
+  Test = "Durbin-Watson",
+  p_value = dwtest(mod)$p.value
+)
+
+kable(
+  autocor_test,
+  caption = "Prueba de autocorrelación"
+)
+
+```

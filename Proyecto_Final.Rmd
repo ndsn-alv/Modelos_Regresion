@@ -470,7 +470,8 @@ mod7 <- lm(Calories ~ Age + Heart_Rate + Body_Temp, calories)
 # Un modelo en el que se elimina Duration y se deja Heart_Rate y Body_temp cumple normalidad
 # Un modelo en el que se elimina Duration y Heart_Rate y se deja Body_temp cumple homocedasticidad
 # Ambos cumplen autocorrelacion
-# Boxcox no mejora los supuestos (debe ser alguna cuestion polinomial)
+# Boxcox no mejora los supuestos
+# Quitando Age no se rechaza homcedasticidad
 
 ###
 
@@ -505,7 +506,7 @@ A excepción del modelo 3, ya ninguna presenta multicolinealidad. Pero el modelo
 
 ```{r}
 
-mod <- lm(Calories ~ Age + Heart_Rate + Body_Temp, calories)
+mod <- lm(Calories ~ BMI + Heart_Rate + Body_Temp, calories)
 mod_summary <- summary(mod)
 
 coeffs <- data.frame(
@@ -518,7 +519,6 @@ kable(
   digits = 6
 )
 
-sd(residuals(mod))
 ```
 - Multiple R-squared: 0.8902
 - Adjusted R-squared: 0.8885

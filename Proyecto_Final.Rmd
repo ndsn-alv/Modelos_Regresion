@@ -4,7 +4,7 @@ author: "Nicolás de Silva Nacenta, Israel Rodríguez Donato, Andrés Manuel Rol
 date: "29 de mayo de 2026"
 output: pdf_document
 ---
-  
+
 ```{r setup, include = F}
 
 knitr::opts_chunk$set(
@@ -12,10 +12,15 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE
 )
-library(car)
-library(data.table)
+
 library(ggplot2)
+library(ggthemes)
 library(GGally)
+library(nortest) #Pruebas de Normalidad
+library(car) #NCV test
+library(lmtest) #Durbin-Watson y Breusch-Godfrey
+library(MASS) #Transformación BoxCox
+library(data.table)
 library(knitr)
 library(corrplot)
 library(MASS)
@@ -33,21 +38,28 @@ moda <- function(x) {
 
 # 1. Introducción
 
-## 1.1. Objetivo general
-Analizar el número de calorías quemadas en función de variables explicativas.
+## 1.1. Contexto
 
-## 1.2. Objetivos específicos
-- Ajustar un modelo de regresión lineal simple.
-- Ajustar un modelo de regresión lineal múltiple.
-- Comparar ambos modelos.
+La regresión lineal es un modelo que permite construir una relación lineal entre una variable "dependiente" y un conjunto de variables "independientes". Esta relación permite explicar el comportamiento de la variable "dependiente" y predecir valores nuevos que podría tomar.
+
+## 1.2. Objetivo general
+
+Este proyecto tiene por objetivo ajustar modelos de regresión lineal que expliquen el número de calorías quemadas en función de variables de interés, así como evaluar el ajuste de estos modelos, que tan bien cumplen los supuestos de la regresión y la viabilidad de los modelos que se propongan.
+
+## 1.3. Objetivos específicos
+
+-   Ajustar un modelo de regresión lineal simple.
+-   Ajustar un modelo de regresión lineal múltiple.
+-   Comparar ambos modelos.
 
 # 2. Descripción de los datos
 
 ## 2.1. Variables
+
 - Calories: Calorias
 - Gender: Género
-- Age: Edad
-_ Height: Altura (cm)
+- Age: Edad 
+- Height: Altura (cm)
 - Weight: Peso (Kg)
 - BMI: Índice de masa corporal ($\frac{Kg}{m^2}$)
 - Duration: Duración de actividad física (min)
@@ -69,7 +81,7 @@ kable(
 
 # 3. Análisis descriptivo de datos
 
-## 3.1. Estadístico descriptivos
+## 3.1. Estadísticos descriptivos
 
 ```{r}
 
@@ -156,13 +168,207 @@ Analizando las matrices notamos que entre ambos géneros no existe gran diferenc
 
 # 4. Modelo de Regresión Lineal Simple
 
+El modelo de regresión lineal simple construye la relación entre la variable dependendiente y una sola variable independiente.
+
 ## 4.1. Selección de variable explicativa
+
+Al realizar la rutina de ejercicio, el gasto calorico podría ser explicado por alguna de las siguientes variables numéricas, seleccionadas por tener una alta correlación con el gasto calórico:
+* Duration: tiene sentido pensar que mientras más tiempo se haya hecho ejercicio, mayo será el gasto calórico.
+* Heart_Rate: el número de latidos por minuto puede funcionar como una métrica del esfuerzo realizado por el individuo durante la rutina, esperaríamos que mayor esfuerzo, mayor gasto calorico.
+* Body_Temp: al igual que el número de latidos, una alta temperatura corporal indicaría un mayor gasto calorico, debido al esfuerzo realizado.
 
 ## 4.2. Ajuste del modelo
 
+Para sustentar nuestra intuición, graficaremos estos modelos propuestos:
+
+```{r}
+ggplot(calories, aes(x = Duration, y = Calories)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              color = "red",
+              se = FALSE) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 2, raw = TRUE), 
+              color = "blue", 
+              se = FALSE) +
+  labs(title = "Gasto Calórico ~ Duración",
+       x = "Duración",
+       y = "Gasto Calorico") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_minimal()
+
+ggplot(calories, aes(x = Heart_Rate, y = Calories)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              color = "red",
+              se = FALSE) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 2, raw = TRUE), 
+              color = "blue", 
+              se = FALSE) +
+  labs(title =  "Gasto Calórico ~ Frecuencia Cardiaca",
+       x = "Frecuencia Cardiaca",
+       y = "Gasto Calórico") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_minimal()
+
+  ggplot(calories, aes(x = Body_Temp, y = Calories)) +
+  geom_point(alpha = 0.6) + # alpha ayuda a ver la densidad de puntos empalmados
+  geom_smooth(method = "lm", 
+              color = "red",
+              se = FALSE) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 2, raw = TRUE), 
+              color = "blue", 
+              se = FALSE) +
+  labs(title = "Gasto Calórico ~ Temperatura Corporal",
+       x = "Temperatura Corporal",
+       y = "Gasto Calórico") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_minimal()
+
+```
+
 ## 4.3. Evaluación del modelo
 
+Visualmente, cada uno de los modelos presenta un buen ajuste a los datos, sin embargo, vamos a estimar los coeficientes y revisar su significancia estadística, así como su coeficiente de ajuste:
+
+```{R}
+
+mod_duration <- lm(data = calories, formula = Calories ~ Duration)
+summary(mod_duration)
+
+mod_heart_rate <- lm(data = calories, formula = Calories ~ Heart_Rate)
+summary(mod_heart_rate)
+
+mod_body_temp <- lm(data = calories, formula = Calories ~ Body_Temp)
+summary(mod_body_temp)
+
+```
+
+Podemos notar que los 3 modelos presentan coeficientes estadísticamente significativos, donde el modelo basado en duración tiene un ajuste del 92.13%, el de frecuencia un ajuste del 83.09% y el de temperatura corporal un ajuste del 69.62%.
+
+Quisieramos quedarnos con el primer modelo, ya que tiene coeficientes estadísticamente significativos y logra explicar en un 92.13% la variabilidad del gasto calórico, sin embargo, el coeficiente de ajuste no es suficiente por si mismo para evaluar a un modelo, por lo que el siguiente paso lógico es evaluar si cada modelo cumple los supuestos
+
 ## 4.4. Supuestos del modelo
+
+```{r}
+# La siguiente función entrega las pruebas de hipótesis necesarias para evaluar los supuestos de cualquier modelo
+evaluar_supuestos <- function(modelo) {
+  residuos <- residuals(modelo)
+  
+  shapiro_res <- shapiro.test(residuos)
+  ncv_res <- car::ncvTest(modelo)
+  dw_res <- lmtest::dwtest(modelo)
+  bg_res <- lmtest::bgtest(modelo)
+  
+  resultados <- list(
+    shapiro_wilk = shapiro_res,
+    ncv_homocedasticidad = ncv_res,
+    durbin_watson = dw_res,
+    breusch_godfrey = bg_res
+  )
+  
+  return(resultados)
+}
+```
+
+```{r}
+
+print("Modelo Basado en Duración")
+evaluar_supuestos(mod_duration)
+
+print("Modelo Basado en Frecuencia Cardíaca")
+evaluar_supuestos(mod_heart_rate)
+
+print("Modelo Basado en Temperatura Corporal")
+evaluar_supuestos(mod_body_temp)
+
+```
+
+En general, podemos notar que ningún modelo sale bien librado, los principales problemas están relacionados con homocedasticidad y normalidad de los errores. Tiene sentido, pues si observamos nuestros gráficos, podemos notar que los datos, a pesar de tener un coeficiente de ajuste alto, no se adecúan a la forma de una línea recta.
+
+Para solucionar este problema, podemos intentar una transformación BoxCox de los datos, buscando solucionar los problemas de homocedasticidad y normalidad, aunque, gráficamente, un modelo más adecuado sería un polinomio, particularmente uno de grado 2.
+
+```{r}
+
+bc_duration   <- boxcox(mod_duration,   plotit = FALSE)
+bc_heart_rate <- boxcox(mod_heart_rate, plotit = FALSE)
+bc_body_temp  <- boxcox(mod_body_temp,  plotit = FALSE)
+
+lambda_duration   <- bc_duration$x[which.max(bc_duration$y)]
+lambda_heart_rate <- bc_heart_rate$x[which.max(bc_heart_rate$y)]
+lambda_body_temp  <- bc_body_temp$x[which.max(bc_body_temp$y)]
+
+cat("lambda (Duration)   :", lambda_duration,   "\n")
+cat("lambda (Heart_Rate) :", lambda_heart_rate, "\n")
+cat("lambda (Body_Temp)  :", lambda_body_temp,  "\n")
+
+# Función auxiliar para aplicar la transformación Box-Cox sobre Y
+transf_boxcox <- function(y, lambda) {
+  if (abs(lambda) < 1e-6) log(y) else (y^lambda - 1) / lambda
+}
+
+# Transformamos Calories con el lambda de cada modelo candidato
+calories$Cal_trans_dur  <- transf_boxcox(calories$Calories, lambda_duration)
+calories$Cal_trans_hr   <- transf_boxcox(calories$Calories, lambda_heart_rate)
+calories$Cal_trans_bt   <- transf_boxcox(calories$Calories, lambda_body_temp)
+
+# Re-ajuste de los tres modelos con Y transformada
+mod_duration_bc   <- lm(Cal_trans_dur ~ Duration,   data = calories)
+mod_heart_rate_bc <- lm(Cal_trans_hr  ~ Heart_Rate, data = calories)
+mod_body_temp_bc  <- lm(Cal_trans_bt  ~ Body_Temp,  data = calories)
+
+summary(mod_duration_bc)
+summary(mod_heart_rate_bc)
+summary(mod_body_temp_bc)
+
+```
+
+Una vez aplicada la transformación BoxCox, vamos a realizar una inspección visual.
+
+```{r}
+
+ggplot(calories, aes(x = Duration, y = Cal_trans_dur)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Calories (BC) ~ Duración",
+       x = "Duración", y = "Calories transformadas") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(calories, aes(x = Heart_Rate, y = Cal_trans_hr)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Calories (BC) ~ Frecuencia Cardíaca",
+       x = "Frecuencia Cardíaca", y = "Calories transformadas") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(calories, aes(x = Body_Temp, y = Cal_trans_bt)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(title = "Calories (BC) ~ Temperatura Corporal",
+       x = "Temperatura Corporal", y = "Calories transformadas") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+Visualmente, el comportamiento ha mejorado mucho, así que toca reevaluar los supuestos
+
+```{r}
+
+print("Modelo Duración (BoxCox en Y)")
+evaluar_supuestos(mod_duration_bc)
+
+print("Modelo Frecuencia Cardíaca (BoxCox en Y)")
+evaluar_supuestos(mod_heart_rate_bc)
+
+print("Modelo Temperatura Corporal (BoxCox en Y)")
+evaluar_supuestos(mod_body_temp_bc)
+
+```
 
 ## 4.5. Intervalos de confianza (95 %)
 
@@ -395,3 +601,7 @@ kable(
 )
 
 ```
+
+# 6. Comparación de modelos
+
+# 7. Conclusiones

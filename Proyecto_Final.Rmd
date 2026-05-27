@@ -13,20 +13,22 @@ knitr::opts_chunk$set(
   message = FALSE
 )
 
+# Librerías para graficar
 library(ggplot2)
 library(ggthemes)
 library(GGally)
+
+# Librerías para realizar pruebas de hipótesis
 library(nortest) #Pruebas de Normalidad
 library(car) #NCV test
 library(lmtest) #Durbin-Watson y Breusch-Godfrey
 library(MASS) #Transformación BoxCox
+
+library(patchwork)
 library(data.table)
 library(knitr)
 library(corrplot)
-library(MASS)
 library(dplyr)
-library(nortest)
-library(lmtest)
 
 moda <- function(x) {
   x <- x[!is.na(x)]
@@ -177,18 +179,18 @@ Al realizar la rutina de ejercicio, el gasto calorico podría ser explicado por 
 * Heart_Rate: el número de latidos por minuto puede funcionar como una métrica del esfuerzo realizado por el individuo durante la rutina, esperaríamos que mayor esfuerzo, mayor gasto calorico.
 * Body_Temp: al igual que el número de latidos, una alta temperatura corporal indicaría un mayor gasto calorico, debido al esfuerzo realizado.
 
-## 4.2. Ajuste del modelo
-
+<!--- 
 Para sustentar nuestra intuición, graficaremos estos modelos propuestos:
+--->
 
-```{r}
-ggplot(calories, aes(x = Duration, y = Calories)) +
+```{r, echo = FALSE}
+p1 <- ggplot(calories, aes(x = Duration, y = Calories)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", 
               color = "red",
               se = FALSE) +
   geom_smooth(method = "lm", 
-              formula = y ~ poly(x, 2, raw = TRUE), 
+              formula = y ~ I(x^2), 
               color = "blue", 
               se = FALSE) +
   labs(title = "Gasto Calórico ~ Duración",
@@ -197,13 +199,13 @@ ggplot(calories, aes(x = Duration, y = Calories)) +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
 
-ggplot(calories, aes(x = Heart_Rate, y = Calories)) +
+p2 <- ggplot(calories, aes(x = Heart_Rate, y = Calories)) +
   geom_point(alpha = 0.6) +
   geom_smooth(method = "lm", 
               color = "red",
               se = FALSE) +
   geom_smooth(method = "lm", 
-              formula = y ~ poly(x, 2, raw = TRUE), 
+              formula = y ~ I(x^2), 
               color = "blue", 
               se = FALSE) +
   labs(title =  "Gasto Calórico ~ Frecuencia Cardiaca",
@@ -212,13 +214,13 @@ ggplot(calories, aes(x = Heart_Rate, y = Calories)) +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
 
-  ggplot(calories, aes(x = Body_Temp, y = Calories)) +
+p3  <- ggplot(calories, aes(x = Body_Temp, y = Calories)) +
   geom_point(alpha = 0.6) + # alpha ayuda a ver la densidad de puntos empalmados
   geom_smooth(method = "lm", 
               color = "red",
               se = FALSE) +
   geom_smooth(method = "lm", 
-              formula = y ~ poly(x, 2, raw = TRUE), 
+              formula = y ~ I(x^2), 
               color = "blue", 
               se = FALSE) +
   labs(title = "Gasto Calórico ~ Temperatura Corporal",
@@ -227,28 +229,44 @@ ggplot(calories, aes(x = Heart_Rate, y = Calories)) +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
 
-```
-
-## 4.3. Evaluación del modelo
-
-Visualmente, cada uno de los modelos presenta un buen ajuste a los datos, sin embargo, vamos a estimar los coeficientes y revisar su significancia estadística, así como su coeficiente de ajuste:
-
-```{R}
-
-mod_duration <- lm(data = calories, formula = Calories ~ Duration)
-summary(mod_duration)
-
-mod_heart_rate <- lm(data = calories, formula = Calories ~ Heart_Rate)
-summary(mod_heart_rate)
-
-mod_body_temp <- lm(data = calories, formula = Calories ~ Body_Temp)
-summary(mod_body_temp)
+p1
+p2
+p3
 
 ```
 
-Podemos notar que los 3 modelos presentan coeficientes estadísticamente significativos, donde el modelo basado en duración tiene un ajuste del 92.13%, el de frecuencia un ajuste del 83.09% y el de temperatura corporal un ajuste del 69.62%.
+<!---
+Los modelos más prometedores son el basado en duración y el basado en frecuencia cardíaca, ya sea usando x sin transformar o usando x^2.
+--->
 
-Quisieramos quedarnos con el primer modelo, ya que tiene coeficientes estadísticamente significativos y logra explicar en un 92.13% la variabilidad del gasto calórico, sin embargo, el coeficiente de ajuste no es suficiente por si mismo para evaluar a un modelo, por lo que el siguiente paso lógico es evaluar si cada modelo cumple los supuestos
+## 4.2. Evaluación y ajuste del modelo
+
+<!---
+Después de una inspección visual, plantearemos cuatro modelos:
+calorias ~ duración
+calorias ~ duración^2
+calorias ~ frecuencia
+calorias ~ fracuencia^2
+--->
+
+
+```{r echo=FALSE}
+
+mod_d <- lm(formula = Calories ~ Duration, data = calories)
+mod_d2 <- lm(formula = Calories ~ I(Duration^2), data = calories)
+mod_hr <- lm(formula = Calories ~ Heart_Rate, data = calories)
+mod_hr2 <- lm(formula = Calories ~ I(Heart_Rate^2), data = calories)
+
+summary(mod_d)
+summary(mod_d2)
+summary(mod_hr)
+summary(mod_hr2)
+
+```
+<!---
+Los modelos obtuvieron resultados excelentes, todos los coeficientes estimados son estadísticamente significativos, el coeficiente de ajuste es mayor al 90% en los modelos basados en duración y mayor a 80% en los modelos basados en frecuencia cardíaca.
+
+--->
 
 ## 4.4. Supuestos del modelo
 
@@ -275,14 +293,16 @@ evaluar_supuestos <- function(modelo) {
 
 ```{r}
 
-print("Modelo Basado en Duración")
-evaluar_supuestos(mod_duration)
+print("Modelos Basados en Duración")
+evaluar_supuestos(mod_d)
+print("^2")
+evaluar_supuestos(mod_d2)
 
-print("Modelo Basado en Frecuencia Cardíaca")
-evaluar_supuestos(mod_heart_rate)
+print("Modelos Basados en Frecuencia Cardíaca")
+evaluar_supuestos(mod_hr)
+print("^2")
+evaluar_supuestos(mod_hr2)
 
-print("Modelo Basado en Temperatura Corporal")
-evaluar_supuestos(mod_body_temp)
 
 ```
 
@@ -294,15 +314,12 @@ Para solucionar este problema, podemos intentar una transformación BoxCox de lo
 
 bc_duration   <- boxcox(mod_duration,   plotit = FALSE)
 bc_heart_rate <- boxcox(mod_heart_rate, plotit = FALSE)
-bc_body_temp  <- boxcox(mod_body_temp,  plotit = FALSE)
 
 lambda_duration   <- bc_duration$x[which.max(bc_duration$y)]
 lambda_heart_rate <- bc_heart_rate$x[which.max(bc_heart_rate$y)]
-lambda_body_temp  <- bc_body_temp$x[which.max(bc_body_temp$y)]
 
 cat("lambda (Duration)   :", lambda_duration,   "\n")
 cat("lambda (Heart_Rate) :", lambda_heart_rate, "\n")
-cat("lambda (Body_Temp)  :", lambda_body_temp,  "\n")
 
 # Función auxiliar para aplicar la transformación Box-Cox sobre Y
 transf_boxcox <- function(y, lambda) {
@@ -312,16 +329,13 @@ transf_boxcox <- function(y, lambda) {
 # Transformamos Calories con el lambda de cada modelo candidato
 calories$Cal_trans_dur  <- transf_boxcox(calories$Calories, lambda_duration)
 calories$Cal_trans_hr   <- transf_boxcox(calories$Calories, lambda_heart_rate)
-calories$Cal_trans_bt   <- transf_boxcox(calories$Calories, lambda_body_temp)
 
 # Re-ajuste de los tres modelos con Y transformada
 mod_duration_bc   <- lm(Cal_trans_dur ~ Duration,   data = calories)
 mod_heart_rate_bc <- lm(Cal_trans_hr  ~ Heart_Rate, data = calories)
-mod_body_temp_bc  <- lm(Cal_trans_bt  ~ Body_Temp,  data = calories)
 
 summary(mod_duration_bc)
 summary(mod_heart_rate_bc)
-summary(mod_body_temp_bc)
 
 ```
 

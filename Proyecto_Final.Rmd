@@ -195,8 +195,8 @@ p1 <- ggplot(calories, aes(x = Duration, y = Calories)) +
               formula = y ~ I(x^2), 
               color = "blue", 
               se = FALSE) +
-  labs(title = "Gasto Calórico ~ Duración",
-       x = "Duración",
+  labs(title = "Gasto Calorico ~ Duracion",
+       x = "Duracion",
        y = "Gasto Calorico") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
@@ -210,9 +210,9 @@ p2 <- ggplot(calories, aes(x = Heart_Rate, y = Calories)) +
               formula = y ~ I(x^2), 
               color = "blue", 
               se = FALSE) +
-  labs(title =  "Gasto Calórico ~ Frecuencia Cardiaca",
+  labs(title =  "Gasto Calorico ~ Frecuencia Cardiaca",
        x = "Frecuencia Cardiaca",
-       y = "Gasto Calórico") +
+       y = "Gasto Calorico") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
 
@@ -225,9 +225,9 @@ p3  <- ggplot(calories, aes(x = Body_Temp, y = Calories)) +
               formula = y ~ I(x^2), 
               color = "blue", 
               se = FALSE) +
-  labs(title = "Gasto Calórico ~ Temperatura Corporal",
+  labs(title = "Gasto Calorico ~ Temperatura Corporal",
        x = "Temperatura Corporal",
-       y = "Gasto Calórico") +
+       y = "Gasto Calorico") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal()
 
@@ -305,23 +305,32 @@ evaluar_supuestos(mod_hr)
 print("^2")
 evaluar_supuestos(mod_hr2)
 
+par(mfrow = c(2,2))
+plot(mod_d)
+plot(mod_d2)
+plot(mod_hr)
+plot(mod_hr2)
+
+AIC(mod_d,mod_d2,mod_hr,mod_hr2)
+BIC(mod_d,mod_d2,mod_hr,mod_hr2)
 
 ```
 
-En general, podemos notar que ningún modelo sale bien librado, los principales problemas están relacionados con homocedasticidad y normalidad de los errores. Tiene sentido, pues si observamos nuestros gráficos, podemos notar que los datos, a pesar de tener un coeficiente de ajuste alto, no se adecúan a la forma de una línea recta.
+<!---En general, podemos notar que ningún modelo sale bien librado, los principales problemas están relacionados con homocedasticidad y normalidad de los errores. Tiene sentido, pues si observamos nuestros gráficos, podemos notar que los datos, a pesar de tener un coeficiente de ajuste alto, no se adecúan a la forma de una línea recta.
 
 Para solucionar este problema, podemos intentar una transformación BoxCox de los datos, buscando solucionar los problemas de homocedasticidad y normalidad, aunque, gráficamente, un modelo más adecuado sería un polinomio, particularmente uno de grado 2.
+--->
 
-```{r}
+```{r echo=FALSE}
 
-bc_duration   <- boxcox(mod_duration,   plotit = FALSE)
-bc_heart_rate <- boxcox(mod_heart_rate, plotit = FALSE)
+bc_d <- boxcox(mod_d, plotit = FALSE)
+bc_hr <- boxcox(mod_hr, plotit = FALSE)
 
-lambda_duration   <- bc_duration$x[which.max(bc_duration$y)]
-lambda_heart_rate <- bc_heart_rate$x[which.max(bc_heart_rate$y)]
+lambda_d   <- bc_d$x[which.max(bc_d$y)]
+lambda_hr <- bc_hr$x[which.max(bc_hr$y)]
 
-cat("lambda (Duration)   :", lambda_duration,   "\n")
-cat("lambda (Heart_Rate) :", lambda_heart_rate, "\n")
+cat("lambda (Duration)   :", lambda_d,   "\n")
+cat("lambda (Heart_Rate) :", lambda_hr, "\n")
 
 # Función auxiliar para aplicar la transformación Box-Cox sobre Y
 transf_boxcox <- function(y, lambda) {
@@ -330,8 +339,8 @@ transf_boxcox <- function(y, lambda) {
 
 # Transformamos Calories con el lambda de cada modelo candidato
 
-calories$Cal_trans_dur  <- transf_boxcox(calories$Calories, lambda_duration)
-calories$Cal_trans_hr   <- transf_boxcox(calories$Calories, lambda_heart_rate)
+calories$Cal_trans_dur  <- transf_boxcox(calories$Calories, lambda_d)
+calories$Cal_trans_hr   <- transf_boxcox(calories$Calories, lambda_hr)
 
 # Re-ajuste de los tres modelos con Y transformada
 mod_duration_bc   <- lm(Cal_trans_dur ~ Duration,   data = calories)
@@ -340,52 +349,60 @@ mod_heart_rate_bc <- lm(Cal_trans_hr  ~ Heart_Rate, data = calories)
 summary(mod_duration_bc)
 summary(mod_heart_rate_bc)
 
-```
-
-Una vez aplicada la transformación BoxCox, vamos a realizar una inspección visual.
-
-```{r}
-
-ggplot(calories, aes(x = Duration, y = Cal_trans_dur)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(title = "Calories (BC) ~ Duración",
-       x = "Duración", y = "Calories transformadas") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))
-
-ggplot(calories, aes(x = Heart_Rate, y = Cal_trans_hr)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(title = "Calories (BC) ~ Frecuencia Cardíaca",
-       x = "Frecuencia Cardíaca", y = "Calories transformadas") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))
-
-ggplot(calories, aes(x = Body_Temp, y = Cal_trans_bt)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = "lm", color = "red", se = FALSE) +
-  labs(title = "Calories (BC) ~ Temperatura Corporal",
-       x = "Temperatura Corporal", y = "Calories transformadas") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5))
+cat("lambda (Duration)   :", lambda_d,   "\n")
+cat("lambda (Heart_Rate) :", lambda_hr, "\n")
 
 ```
 
-Visualmente, el comportamiento ha mejorado mucho, así que toca reevaluar los supuestos
+<!---
 
-```{r}
+Dado que obtuvimos una lambda de 0.5, aplicaremos la siguiente transformación a las calorias: sqrt(Calories)
 
-print("Modelo Duración (BoxCox en Y)")
-evaluar_supuestos(mod_duration_bc)
+--->
 
-print("Modelo Frecuencia Cardíaca (BoxCox en Y)")
-evaluar_supuestos(mod_heart_rate_bc)
+```{r echo = FALSE}
 
-print("Modelo Temperatura Corporal (BoxCox en Y)")
-evaluar_supuestos(mod_body_temp_bc)
+calories$Calories_T <- sqrt(calories$Calories)
+
+mod_d_bc  <- lm(Calories_T ~ Duration, calories)
+mod_hr_bc <- lm(Calories_T ~ Heart_Rate, calories)
+
+ggplot(data = calories, aes(x = Duration, y = Calories_T))+
+  geom_point(alpha = 0.6)+
+  geom_smooth(method = "lm",
+              se = FALSE,
+              color = "red")+
+  labs(title = "√Calorias ~ Duración")+
+  theme_minimal()
+
+ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
+  geom_point(alpha = 0.6)+
+  geom_smooth(method = "lm",
+              se = FALSE,
+              color = "red")+
+  labs(title = "√Calorias ~ Frecuencia Cardiaca")+
+  theme_minimal()
+
+par(mfrow = c(2,2))
+plot(mod_d_bc)
+plot(mod_hr_bc)
+
+
+print("Modelo Basado en Duración")
+summary(mod_d_bc)
+print("Modelo Basado en Frecuencia Cardiaca")
+summary(mod_hr_bc)
+
+AIC(mod_d_bc, mod_hr_bc)
+BIC(mod_d_bc, mod_hr_bc)
+
+print("Modelo Basado en Duración")
+evaluar_supuestos(mod_d_bc)
+print("Modelo Basado en Frecuencia Cardiaca")
+evaluar_supuestos(mod_hr_bc)
 
 ```
+
 
 ## 4.5. Intervalos de confianza (95 %)
 
@@ -646,6 +663,7 @@ kable(
 )
 
 ```
+
 Visualmente, no podriamos decir que tengamos una dispersión unforme de los puntos. Mas bien, se ve una relación lineal en los residuales con los valores ajustados menores a cero, esto nos causa cierto grado de confusión especialmente por que no esperamos una cantidad negativa de calorias quemadas. Además, errores positivos se observan mas en los extremos de la distribución de las calorias, indicando una subestimación para valores muy grandes o pequeños en la quema de calorias. Por otro lado, en los valores centrales de la distribución se observa sobreestimación en las calorias quemadas. Esto podría deberse a que hay muchas observaciones cuya cantidad de calorias es muy cercana a cero. Esto podría ser problemático ya que es como si estuvieramos mediando la quema de calorias en gente que no hizo ejercicio o tuvo una rutina extremadamente corta (menor a 3 minutos). Aún asi, por las pruebas de homocedasticidad no podemos rechazar que se tenga varianza constante en el modelo.
 
 **No autocorrelación**. Finalmente, se evalúa la presencia de autocorrelación en los residuales mediante la prueba correspondiente.

@@ -329,14 +329,11 @@ bc_hr <- boxcox(mod_hr, plotit = FALSE)
 lambda_d   <- bc_d$x[which.max(bc_d$y)]
 lambda_hr <- bc_hr$x[which.max(bc_hr$y)]
 
-<<<<<<< HEAD
 cat("lambda (Duration)   :", lambda_d,   "\n")
 cat("lambda (Heart_Rate) :", lambda_hr, "\n")
-=======
-<<<<<<< HEAD
-cat("lambda (Duration)   :", lambda_duration,   "\n")
-cat("lambda (Heart_Rate) :", lambda_heart_rate, "\n")
->>>>>>> cef2eb84928f04fd70b181a15ba4734f8cd36ba8
+
+cat("lambda (Duration)   :", lambda_d,   "\n")
+cat("lambda (Heart_Rate) :", lambda_hr, "\n")
 
 # Función auxiliar para aplicar la transformación Box-Cox sobre Y
 transf_boxcox <- function(y, lambda) {
@@ -354,16 +351,12 @@ mod_heart_rate_bc <- lm(Cal_trans_hr  ~ Heart_Rate, data = calories)
 
 summary(mod_duration_bc)
 summary(mod_heart_rate_bc)
-<<<<<<< HEAD
 
 cat("lambda (Duration)   :", lambda_d,   "\n")
 cat("lambda (Heart_Rate) :", lambda_hr, "\n")
-=======
-=======
+
 cat("lambda (Duration)   :", lambda_d,   "\n")
 cat("lambda (Heart_Rate) :", lambda_hr, "\n")
->>>>>>> da91fea8fd4c2fa655dfc9914636fb3ca1789ffe
->>>>>>> cef2eb84928f04fd70b181a15ba4734f8cd36ba8
 
 ```
 
@@ -471,7 +464,7 @@ kable(
 
 Podemos ver que el modelo tiene multicolinealidad fuerte en las variables *Height*, *Weight* y *BMI*, donde directamente el índice de masa corporal es una relación entre la altura y el peso lo cual explica la alta correlación entre este grupo de variables. Por otro lado, variables como *Duration*, *Heart_Rate* y *Body_Temp* presentan multicolinealidad moderada. Igualmente por la matriz de correlación observamos una correlación fuerte entre este otro grupo de variables. Por último, la variable *Age* mantiene el VIF mas pequeño, consistente con su nula o débil correlación con el resto de las variables.
 
-Buscamos ajustar un nuevo modelo mediante la eliminación de algunas de las variables de grupos correlacionados. Primero nos enfocamos en eliminar la multicolinealidad mas fuerte con las variables de masa corporal. Como resultado obte
+Buscamos ajustar un nuevo modelo mediante la eliminación de algunas de las variables de grupos correlacionados. Primero nos enfocamos en eliminar la multicolinealidad mas fuerte con las variables de masa corporal. Como resultado obtenemos.
 
 ```{r}
 mod1 <- lm(Calories ~ Age + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)
@@ -583,7 +576,7 @@ kable(
 ```
 
 
-A excepción del modelo 2, basta quitar una sola variable para eliminar multicolinealidad. El modelo escogido será justificado en la siguiente sección ya que interesantemente los supuestos del modelo son afectados fuertemente dependiendo de la combinación de estas tres  especificamente.
+A excepción del modelo 2, basta quitar una sola variable para eliminar multicolinealidad. El modelo escogido será justificado en la siguiente sección ya que los supuestos del modelo son afectados fuertemente dependiendo de la combinación de estas tres variables especificamente.
 
 ## 5.4. Análisis de residuos
 
@@ -593,14 +586,14 @@ Primero que nada, para cada una de las combinaciones se cumplía el supuesto de 
 
 Sin embargo, lo curioso empieza cuando un modelo que solo incluya *Body_Temp* como parte del grupo de variables era la única forma de mantener varianza constante (homocedasticidad). Pero anulaba la normalidad de los residuos teniendo p-valores muy cercanos a cero en las pruebas de normalidad que se mencionarán mas adelante.
 
-Por último, la mejor combinación se encontró cuando eliminando *Duration* y dejando las otras dos variables. Esto no solo logro cumplir los supuestos de normalidad y no autocorrelación. Si no con unos p-valores cercanos a 1 en ambos casos. No importaba si se removian o añadian otras valores fuera de este grupo (*BMI* o *Gender*, por ejemplo). Mientras *Duration* no esté en el modelo, no podiamos negar normalidad ni autocorrelación. El problema era la homocedasticidad. Esta era brutalmente rechazada. Una vez que se notó que *Age*, en cierto punto afectaba la homocedasticidad de forma leva se optó por removerla completamente. Una vez que se cumplían todos los supuestos, se encontró una mejora todavía mayor al elevar al cuadrado tanto *Heart_Rate* como *Body_Temp* y una mejora todavía mayor incluyendo *BMI* (con *Height* o *Weight* se rechazaba homocedasticidad o tenian p-valores muy cercanos al nivel de significancia de 5%).
+Por último, la mejor combinación se encontró eliminando *Duration* y dejando las otras dos variables. Esto no solo logro cumplir los supuestos de normalidad y no autocorrelación. Si no con unos p-valores cercanos a 1 en ambos casos. No importaba si se removian o añadian otras valores fuera de este grupo (*BMI* o *Gender*, por ejemplo). Mientras *Duration* no esté en el modelo, no podiamos negar normalidad ni autocorrelación. El problema era la homocedasticidad. Esta era brutalmente rechazada. Una vez que se notó que *Age*, en cierto punto afectaba la homocedasticidad de forma leva se optó por removerla completamente. Una vez que se cumplían todos los supuestos, se encontró una mejora todavía mayor al elevar al cuadrado tanto *Heart_Rate* como *Body_Temp* y una mejora todavía mayor incluyendo *BMI* (con *Height* o *Weight* se rechazaba homocedasticidad o tenian p-valores muy cercanos al nivel de significancia de 5%).
 
 Ajustando el modelo se obtienen las siguientes caracteristicas.
 
 ```{r}
 
 mod <- lm(Calories ~ BMI + I(Heart_Rate^2) + I(Body_Temp^2), calories)
-mod_summary <- summary(mod);mod_summary
+mod_summary <- summary(mod)
 
 coeffs <- data.frame(
   mod_summary$coefficients

@@ -329,8 +329,14 @@ bc_hr <- boxcox(mod_hr, plotit = FALSE)
 lambda_d   <- bc_d$x[which.max(bc_d$y)]
 lambda_hr <- bc_hr$x[which.max(bc_hr$y)]
 
+<<<<<<< HEAD
 cat("lambda (Duration)   :", lambda_d,   "\n")
 cat("lambda (Heart_Rate) :", lambda_hr, "\n")
+=======
+<<<<<<< HEAD
+cat("lambda (Duration)   :", lambda_duration,   "\n")
+cat("lambda (Heart_Rate) :", lambda_heart_rate, "\n")
+>>>>>>> cef2eb84928f04fd70b181a15ba4734f8cd36ba8
 
 # Función auxiliar para aplicar la transformación Box-Cox sobre Y
 transf_boxcox <- function(y, lambda) {
@@ -348,9 +354,16 @@ mod_heart_rate_bc <- lm(Cal_trans_hr  ~ Heart_Rate, data = calories)
 
 summary(mod_duration_bc)
 summary(mod_heart_rate_bc)
+<<<<<<< HEAD
 
 cat("lambda (Duration)   :", lambda_d,   "\n")
 cat("lambda (Heart_Rate) :", lambda_hr, "\n")
+=======
+=======
+cat("lambda (Duration)   :", lambda_d,   "\n")
+cat("lambda (Heart_Rate) :", lambda_hr, "\n")
+>>>>>>> da91fea8fd4c2fa655dfc9914636fb3ca1789ffe
+>>>>>>> cef2eb84928f04fd70b181a15ba4734f8cd36ba8
 
 ```
 

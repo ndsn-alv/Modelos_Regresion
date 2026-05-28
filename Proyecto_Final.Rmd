@@ -439,7 +439,92 @@ En general, el modelo es bastante bueno, los coeficientes estimados son altament
 
 ## 4.5. Intervalos de confianza (95 %)
 
+```{r}
+
+coef_d <- coef(mod_d_bc)
+ic_d   <- confint(mod_d_bc, level = 0.95)
+tabla_d <- data.frame(
+  Parámetro = names(coef_d),
+  Estimación = coef_d,
+  Lím_inferior = ic_d[, 1],
+  Lím_superior = ic_d[, 2],
+  row.names = NULL
+)
+
+coef_hr <- coef(mod_hr_bc)
+ic_hr   <- confint(mod_hr_bc, level = 0.95)
+tabla_hr <- data.frame(
+  Parámetro = names(coef_hr),
+  Estimación = coef_hr,
+  Lím_inferior = ic_hr[, 1],
+  Lím_superior = ic_hr[, 2],
+  row.names = NULL
+)
+
+kable(tabla_d, digits = 4, caption = "Coeficientes e IC - sqrt(Calories) ~ Duration")
+kable(tabla_hr, digits = 4, caption = "Coeficientes e IC - sqrt(Calories) ~ Heart_Rate")
+
+ggplot(data = calories, aes(x = Duration, y = Calories_T))+
+  geom_point(alpha = 0.6)+
+  geom_smooth(method = "lm",
+              se = TRUE,
+              color = "red")+
+  labs(title = "Raiz Calorias ~ Duración")+
+  theme_minimal()
+
+ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
+  geom_point(alpha = 0.6)+
+  geom_smooth(method = "lm",
+              se = TRUE,
+              color = "red")+
+  labs(title = "Raiz Calorias ~ Frecuencia Cardiaca")+
+  theme_minimal()
+
 ## 4.6. Intervalos para respuesta media y predicción
+
+```{r}
+nuevos_dur <- data.frame(Duration = seq(
+  min(calories$Duration), 
+  max(calories$Duration), 
+  length.out = 100
+))
+
+
+pred_conf <- predict(mod_d_bc, newdata = nuevos_dur, interval = "confidence")
+pred_pred <- predict(mod_d_bc, newdata = nuevos_dur, interval = "prediction")
+
+
+bandas_dur <- cbind(nuevos_dur, pred_conf, pred_pred)
+names(bandas_dur) <- c("Duration", "fit", "lwr_conf", "upr_conf", 
+                       "fit2", "lwr_pred", "upr_pred")
+
+
+ggplot() +
+  # Banda de predicción (la más amplia, primero para que quede detrás)
+  geom_ribbon(data = bandas_dur, 
+              aes(x = Duration, ymin = lwr_pred, ymax = upr_pred),
+              fill = "gray80", alpha = 0.4) +
+  # Banda de confianza (más estrecha)
+  geom_ribbon(data = bandas_dur, 
+              aes(x = Duration, ymin = lwr_conf, ymax = upr_conf),
+              fill = "blue", alpha = 0.3) +
+  # Recta de regresión
+  geom_line(data = bandas_dur, 
+            aes(x = Duration, y = fit), 
+            color = "red", size = 1) +
+  # Puntos observados
+  geom_point(data = calories, 
+             aes(x = Duration, y = Calories_T), 
+             alpha = 0.6) +
+  labs(title = "Raíz(Calorías) ~ Duración",
+       subtitle = "Bandas: gris = predicción, azul = confianza de la media",
+       y = "sqrt(Calories)", x = "Duration") +
+  theme_minimal()
+
+
+bandas_orig <- bandas_dur
+bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")] <- 
+  bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")]^2
 
 # 5. Modelo de Regresión Lineal Múltiple
 

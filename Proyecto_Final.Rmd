@@ -438,8 +438,50 @@ El modelo no cumple con el supuesto de normalidad ni con el de homocedasticidad,
 En general, el modelo es bastante bueno, los coeficientes estimados son altamente significativos, el ajuste y los residuales son excelentes y en criterios AIC y BIC es superior frente a otros modelos simples. Que no haya cumplido el supuesto de homocedasticidad revela que una sola variable no es suficiente para explicar el comportamiento del gasto calórico, o bien, que el comportamiento no puede ser explicado con el modelo clásico.
 
 ## 4.5. Intervalos de confianza (95 %)
+```{r}
+
+coef_d <- coef(mod_d_bc)
+ic_d   <- confint(mod_d_bc, level = 0.95)
+tabla_d <- data.frame(
+  Parámetro = names(coef_d),
+  Estimación = coef_d,
+  Lím_inferior = ic_d[, 1],
+  Lím_superior = ic_d[, 2],
+  row.names = NULL
+)
+
+coef_hr <- coef(mod_hr_bc)
+ic_hr   <- confint(mod_hr_bc, level = 0.95)
+tabla_hr <- data.frame(
+  Parámetro = names(coef_hr),
+  Estimación = coef_hr,
+  Lím_inferior = ic_hr[, 1],
+  Lím_superior = ic_hr[, 2],
+  row.names = NULL
+)
+
+kable(tabla_d, digits = 4, caption = "Coeficientes e IC - sqrt(Calories) ~ Duration")
+kable(tabla_hr, digits = 4, caption = "Coeficientes e IC - sqrt(Calories) ~ Heart_Rate")
 
 ## 4.6. Intervalos para respuesta media y predicción
+
+
+```{r}
+ggplot(data = calories, aes(x = Duration, y = Calories_T))+
+  geom_point(alpha = 0.6)+
+  geom_smooth(method = "lm",
+              se = TRUE,
+              color = "red")+
+  labs(title = "Raiz Calorias ~ Duración")+
+  theme_minimal()
+
+ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
+  geom_point(alpha = 0.6)+
+  geom_smooth(method = "lm",
+              se = TRUE,
+              color = "red")+
+  labs(title = "Raiz Calorias ~ Frecuencia Cardiaca")+
+  theme_minimal()
 
 # 5. Modelo de Regresión Lineal Múltiple
 

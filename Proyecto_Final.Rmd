@@ -41,25 +41,11 @@ moda <- function(x) {
 
 ```
 
-# 1. Introducción
-
-## 1.1. Contexto
-
 La regresión lineal es un modelo que permite construir una relación lineal entre una variable "dependiente" y un conjunto de variables "independientes". Esta relación permite explicar el comportamiento de la variable "dependiente" y predecir valores nuevos que podría tomar.
 
-## 1.2. Objetivo general
+# 1. Descripción de los datos
 
-Este proyecto tiene por objetivo ajustar modelos de regresión lineal que expliquen el número de calorías quemadas en función de variables de interés, así como evaluar el ajuste de estos modelos, que tan bien cumplen los supuestos de la regresión y la viabilidad de los modelos que se propongan.
-
-## 1.3. Objetivos específicos
-
--   Ajustar un modelo de regresión lineal simple.
--   Ajustar un modelo de regresión lineal múltiple.
--   Comparar ambos modelos.
-
-# 2. Descripción de los datos
-
-## 2.1. Variables
+## 1.1. Variables
 
 - Calories: Calorias
 - Gender: Género
@@ -71,22 +57,14 @@ Este proyecto tiene por objetivo ajustar modelos de regresión lineal que expliq
 - Heart_Rate: Frecuencia cardíaca (lpm)
 - Body_Temp: Temperatura corporal (C°)
 
-## 2.2. Carga de datos y visualización de la base de datos
-
 ```{r, echo=FALSE}
 calories <- read.csv("https://raw.githubusercontent.com/ndsn-alv/Modelos_Regresion/main/Data/calorias.csv")
 
-kable(
-  head(calories, n = 10),
-  caption = "10 observaciones de la base",
-  digits = 2
-)
-
 ```
 
-# 3. Análisis descriptivo de datos
+# 2. Análisis descriptivo de datos
 
-## 3.1. Estadísticos descriptivos
+## 2.1. Estadísticos descriptivos
 
 ```{r}
 
@@ -106,30 +84,7 @@ kable(
 
 ```
 
-## 3.2. Visualización de variables
-
-```{r}
-par(mfrow = c(3,3))
-
-for (v in colnames(calories[,-2])) {
-  hist(calories[[v]],
-       main = paste("Histograma de", v),
-       xlab = v,
-       col = "lightgray",
-       border = "black")
-}
-
-barplot(table(calories$Gender),
-        main = "Frecuencia de Gender",
-        xlab = "Gender",
-        ylab = "Frecuencia",
-        col = "lightgray",
-        border = "black"
-)
-
-```
-
-Matriz de correlación:
+## 2.2. Matriz de correlación:
 
 ```{r}
 
@@ -171,9 +126,9 @@ Se puede ver que la edad no esta correlacionada con ninguna de las otras variabl
 
 Analizando las matrices notamos que entre ambos géneros no existe gran diferencia en la correlación lo cual podría explicar que ningun género presenta ventaja sobre el otro a la hora de la quema de calorias.
 
-# 4. Modelo de Regresión Lineal Simple
+# 3. Modelo de Regresión Lineal Simple
 
-## 4.1. Selección de variable explicativa
+## 3.1. Selección de variable explicativa
 
 Al realizar la rutina de ejercicio, el gasto calorico podría ser explicado por alguna de las siguientes variables numéricas, seleccionadas por tener una alta correlación con el gasto calórico:
 
@@ -394,19 +349,19 @@ Una vez aplicada la transformación, planteamos dos modelos finalistas: la raíz
 
 Nuevamente, analizamos significancia estadística, ajuste, residuales, AIC, BIC y cumplimiento de supuestos. Encontramos que el mejor modelo en términos de AIC, BIC, ajuste y residuales es el modelo basado en duración, por lo que es el modelo seleccionado que explicaremos a continuación.
 
-## 4.2 Explicación del modelo.
+## 3.2 Explicación del modelo.
 
 El modelo posee un intercepto estimado de 2.1863 y una $\hat{\beta_1}$ estimada de 0.4216, ambos con p-valor menor a 2x$10^{-16}$, lo que indica una alta significancia estadística. Esto significa que al aumentar un minuto en la rutina de ejercicios, la raiz cuadrada del gasto calórico aumenta en 0.42 unidades. 
 
 Notemos dos cosas, la primera es que el intercepto cumple la función de dar soporte a la recta, ya que una rutina de 0 minutos no tiene sentido; la segunda, el incremento es sobre la raíz cuadrada del gasto calórico y no sobre el gasto calórico como tal.
 
-## 4.3 Ajuste del modelo
+## 3.3 Ajuste del modelo
 
 El coeficiente de determinación es de 0.9518, el ajustado es de 0.9515, significa que la duración explica en un 95% el comportamiento de la raíz cuadrada del gasto calórico, y tiene sentido que no varíen entre sí, ya que el coeficiente de determinación ajustado penaliza por añadir variables, pero al ser un modelo simple, no existe tan penalización. 
 
 El error estándar residual estimado es de 0.8204, indicando una desviación estándar de los errores de $\pm0.8204$, el residual mínimo posee una valor de -3.08537 y el máximo de 2.75438, con una media de -0.02556, bastante cercana a cero. Debemos considerar que la unidad de medida es la raíz cuadrada del gasto calórico, en general, los residuales presentan una variación mínima, y el 50% de los errores son cercanos a cero.
 
-## 4.4 Evaluación de supuestos
+## 3.4 Evaluación de supuestos
 
 ```{r echo=FALSE}
 
@@ -437,7 +392,7 @@ El modelo no cumple con el supuesto de normalidad ni con el de homocedasticidad,
 
 En general, el modelo es bastante bueno, los coeficientes estimados son altamente significativos, el ajuste y los residuales son excelentes y en criterios AIC y BIC es superior frente a otros modelos simples. Que no haya cumplido el supuesto de homocedasticidad revela que una sola variable no es suficiente para explicar el comportamiento del gasto calórico, o bien, que el comportamiento no puede ser explicado con el modelo clásico.
 
-## 4.5. Intervalos de confianza (95 %)
+## 3.5. Intervalos de confianza (95 %)
 
 ```{r echo=FALSE}
 
@@ -481,7 +436,7 @@ ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
   theme_minimal()
 ```
 
-## 4.6. Intervalos para respuesta media y predicción
+## 3.6. Intervalos para respuesta media y predicción
 
 ```{r echo=FALSE}
 nuevos_dur <- data.frame(Duration = seq(
@@ -573,13 +528,13 @@ bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")] <-
 
 ```
 
-# 5. Modelo de Regresión Lineal Múltiple
+# 4. Modelo de Regresión Lineal Múltiple
 
-## 5.1. Selección de variables
+## 4.1. Selección de variables
 
 Para una selección inicial definimos un modelo utilizando todas las variables. Mediante un stepwise AIC con dirección hacia atras verificamos que eliminando la varible *Gender* obtenemos un menor AIC que el original. Posiblemente debido a que realmente el género no afecta fuertemente en la correlación del resto de variables como se vio en la matriz de correalación. 
 
-## 5.2. Ajuste del modelo
+## 4.2. Ajuste del modelo
 
 ```{r}
 mod <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)
@@ -605,7 +560,7 @@ Adicionalmente obtenemos estas caracteristicas:
 
 Esto nos indica que obtenemos un modelo múltiple estadísticamente significativo.
 
-## 5.3. Evaluación de multicolinealidad del modelo
+## 4.3. Evaluación de multicolinealidad del modelo
 
 Desde la matriz de correlación obteniamos distinto grupos de variables, lo cual es posible que se presnete alta multicolinealidad. Obtenemos los siguientes valores de inflación de la varianza para cada variable.
 
@@ -668,19 +623,7 @@ kable(
 
 ```
 
-Lo principal que podemos notar es que la multicolinealidad de los otros grupos de variables no fue afectada al remover estas variables. Además, quitando solo una nos basta para corregir multicolinealidad (excepto para el modelo 3). Mostramos ahora los AICs para cada modelo propuesto.
-
-```{r}
-
-aic1 <- AIC(mod1, mod2, mod3, mod4, mod5, mod6, mod7)
-
-kable(
-  aic1,
-  caption = "AICs de los modelos"
-)
-```
-
-No tenemos alteraciones muy fuertes en los AICs. Sin embargo, el modelo con el AIC mas bajo resulta ser aquello en donde eliminamos completamente el grupo de variables. Aún así, otra combinación de variables de masa corporal no debería afectar fuertemente al modelo.
+Lo principal que podemos notar es que la multicolinealidad de los otros grupos de variables no fue afectada al remover estas variables. Además, quitando solo una nos basta para corregir multicolinealidad (excepto para el modelo 3). Reducimos el modelo eliminando *Height*, *Weight* y *BMI*, resultando en el AIC mas bajo.
 
 ```{r}
 
@@ -737,7 +680,7 @@ kable(
 
 A excepción del modelo 2, basta quitar una sola variable para eliminar multicolinealidad. El modelo escogido será justificado en la siguiente sección ya que los supuestos del modelo son afectados fuertemente dependiendo de la combinación de estas tres variables especificamente.
 
-## 5.4. Análisis de residuos
+## 4.4. Análisis de residuos
 
 Haciendo prueba y error con cada uno de los modelos se encontró cuestiones muy interesantes sobre la relación entre *Duration*, *Heart_Rate* y *Body_Temp* y el cumplimiento de los supuestos.
 
@@ -850,7 +793,7 @@ Podemos observar que no podemos rechazar la autocorrelación de los errores resi
 
 Este modelo nos permitió medir el gasto calórico por medio del índice de masa corporal, la frecuencia cardiaca y la temperatura corporal a la hora del ejercicio. 
 
-## 5.5. Valores influyentes
+## 4.5. Valores influyentes
 
 ```{r}
 
@@ -880,6 +823,6 @@ La observación 76 mantiene un perfil físico normal, pero con una un grado mín
 
 Por último, la observación 75 tenia un alto nivel de leverage lo que podria indicar una combinación poco común de variables pero sigue la tendencia del modelo. Por lo que se considera un punto raro, pero bien explicado. 
 
-# 6. Comparación de modelos
+# 5. Comparación de modelos
 
-# 7. Conclusiones
+# 6. Conclusiones

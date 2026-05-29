@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.5.17)  28 MAY 2026 20:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.5.17)  28 MAY 2026 21:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -512,128 +512,110 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 107.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 97.
 (c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 131.
+(Font)              <10> on input line 107.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 131.
+(Font)              <7> on input line 107.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 131.
-
-Overfull \hbox (0.88744pt too wide) in paragraph at lines 172--173
- []\T1/lmr/m/n/10 (-20) Body_Temp
- []
-
-
-Overfull \hbox (0.88744pt too wide) in paragraph at lines 194--195
- []\T1/lmr/m/n/10 (-20) Body_Temp
- []
-
-
-ignored: Infinite glue shrinkage found in box being split [1
-
-{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf, id=24, 469.755pt x 325.215pt>
+(Font)              <5> on input line 107.
+<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf, id=4, 469.755pt x 325.215pt>
 File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type pdf)
 <use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 243.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[2]
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-4-1.pdf, id=32, 469.755pt x 325.215pt>
-File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-4-1.pdf Graphic file (type pdf)
-<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-4-1.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-4-1.pdf  used on input line 247.
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf  used on input line 146.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 247--250
-[][]
- []
-
-[3 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf>] [4 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-4-1.pdf>] [5{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf, id=69, 469.755pt x 325.215pt>
-File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type pdf)
-<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf  used on input line 439.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf, id=70, 469.755pt x 325.215pt>
-File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf Graphic file (type pdf)
-<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf  used on input line 440.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 439--441
-[][]
- []
-
-[6 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf>]
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-1.pdf, id=88, 469.755pt x 325.215pt>
-File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (type pdf)
-<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-1.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-1.pdf  used on input line 445.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-2.pdf, id=89, 469.755pt x 325.215pt>
-File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-2.pdf Graphic file (type pdf)
-<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-2.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-2.pdf  used on input line 446.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 445--447
+Underfull \hbox (badness 10000) in paragraph at lines 146--149
 []
  []
 
-[7 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf>]
+[1
+
+{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}] [2 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-3-1.pdf>] [3{c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
+<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-1.pdf, id=47, 469.755pt x 325.215pt>
+File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type pdf)
+<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-1.pdf>
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-1.pdf  used on input line 338.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-2.pdf, id=48, 469.755pt x 325.215pt>
+File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-2.pdf Graphic file (type pdf)
+<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-2.pdf>
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-2.pdf  used on input line 339.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 338--340
+[][]
+ []
+
+[4] [5 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-1.pdf>]
+<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf, id=71, 469.755pt x 325.215pt>
+File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type pdf)
+<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf>
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf  used on input line 344.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf, id=72, 469.755pt x 325.215pt>
+File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf Graphic file (type pdf)
+<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf>
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf  used on input line 345.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 344--346
+[]
+ []
+
+[6 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-11-2.pdf>]
 Overfull \vbox (20.78995pt too high) has occurred while \output is active []
 
-[8 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-1.pdf> <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-13-2.pdf>] [9] [10]
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-20-1.pdf, id=151, 469.755pt x 325.215pt>
-File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type pdf)
-<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-20-1.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-20-1.pdf  used on input line 731.
+[7 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-1.pdf> <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-12-2.pdf>] [8] [9]
+<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-18-1.pdf, id=132, 469.755pt x 325.215pt>
+File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type pdf)
+<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-18-1.pdf>
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-18-1.pdf  used on input line 605.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[11]
+[10 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-18-1.pdf>]
+<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-19-1.pdf, id=147, 469.755pt x 325.215pt>
+File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type pdf)
+<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-19-1.pdf>
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-19-1.pdf  used on input line 633.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[11 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-19-1.pdf>]
 <Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-21-1.pdf, id=158, 469.755pt x 325.215pt>
 File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-21-1.pdf Graphic file (type pdf)
 <use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-21-1.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-21-1.pdf  used on input line 759.
+Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-21-1.pdf  used on input line 694.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[12 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-20-1.pdf>] [13 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-21-1.pdf>]
-<Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-23-1.pdf, id=182, 469.755pt x 325.215pt>
-File: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-23-1.pdf Graphic file (type pdf)
-<use Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-23-1.pdf>
-Package pdftex.def Info: Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-23-1.pdf  used on input line 820.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Overfull \hbox (6.68697pt too wide) in paragraph at lines 883--884
+[12 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-21-1.pdf>]
+Overfull \hbox (6.68697pt too wide) in paragraph at lines 757--758
  []\T1/lmr/m/n/10 (-20) Body_Temp
  []
 
 
-Overfull \hbox (6.68697pt too wide) in paragraph at lines 906--907
+Overfull \hbox (6.68697pt too wide) in paragraph at lines 780--781
  []\T1/lmr/m/n/10 (-20) Body_Temp
  []
 
-[14 <./Proyecto_Final_files/Proyecto_Final_files/figure-latex/unnamed-chunk-23-1.pdf>] [15] (./Proyecto_Final.aux)
+[13] (./Proyecto_Final.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-04-28>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 13726 strings out of 469331
- 222684 string characters out of 5464601
- 694993 words of memory out of 5000000
- 42170 multiletter control sequences out of 15000+600000
+ 13698 strings out of 469331
+ 221823 string characters out of 5464601
+ 688540 words of memory out of 5000000
+ 42151 multiletter control sequences out of 15000+600000
  684316 words of font info for 148 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 83i,7n,93p,1011b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 83i,7n,93p,1011b,562s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr5.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/nicod/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb>
-Output written on Proyecto_Final.pdf (15 pages, 393913 bytes).
+Output written on Proyecto_Final.pdf (13 pages, 384647 bytes).
 PDF statistics:
- 475 PDF objects out of 1000 (max. 8388607)
- 409 compressed objects within 5 object streams
- 56 named destinations out of 1000 (max. 500000)
- 30966 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 435 PDF objects out of 1000 (max. 8388607)
+ 374 compressed objects within 4 object streams
+ 47 named destinations out of 1000 (max. 500000)
+ 30921 words of extra memory for PDF output out of 35830 (max. 10000000)
 

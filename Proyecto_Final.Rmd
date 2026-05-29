@@ -41,30 +41,16 @@ moda <- function(x) {
 
 ```
 
-La regresión lineal es un modelo que permite construir una relación lineal entre una variable "dependiente" y un conjunto de variables "independientes". Esta relación permite explicar el comportamiento de la variable "dependiente" y predecir valores nuevos que podría tomar.
-
-# 1. Descripción de los datos
-
-## 1.1. Variables
-
-- Calories: Calorias
-- Gender: Género
-- Age: Edad 
-- Height: Altura (cm)
-- Weight: Peso (Kg)
-- BMI: Índice de masa corporal ($\frac{Kg}{m^2}$)
-- Duration: Duración de actividad física (min)
-- Heart_Rate: Frecuencia cardíaca (lpm)
-- Body_Temp: Temperatura corporal (C°)
+El objetivo de este proyecto es ajustar una regresión lineal que explique el gasto calórico, así como evaluar cada modelo que se proponga.
 
 ```{r, echo=FALSE}
 calories <- read.csv("https://raw.githubusercontent.com/ndsn-alv/Modelos_Regresion/main/Data/calorias.csv")
 
 ```
 
-# 2. Análisis descriptivo de datos
+# 1. Análisis descriptivo de datos
 
-## 2.1. Estadísticos descriptivos
+## 1.1. Estadísticos descriptivos
 
 ```{r}
 
@@ -84,7 +70,7 @@ kable(
 
 ```
 
-## 2.2. Matriz de correlación:
+## 1.2. Matriz de correlación:
 
 ```{r}
 
@@ -126,9 +112,9 @@ Se puede ver que la edad no esta correlacionada con ninguna de las otras variabl
 
 Analizando las matrices notamos que entre ambos géneros no existe gran diferencia en la correlación lo cual podría explicar que ningun género presenta ventaja sobre el otro a la hora de la quema de calorias.
 
-# 3. Modelo de Regresión Lineal Simple
+# 2. Modelo de Regresión Lineal Simple
 
-## 3.1. Selección de variable explicativa
+## 2.1. Selección de variable explicativa
 
 Al realizar la rutina de ejercicio, el gasto calorico podría ser explicado por alguna de las siguientes variables numéricas, seleccionadas por tener una alta correlación con el gasto calórico:
 
@@ -334,34 +320,26 @@ evaluar_supuestos(mod_hr_bc)
 
 ```
 
-Para seleccionar la variable explicativa, nos apoyamos en los siguientes criterios:
 
-- Significancia de los coeficientes estimados.
-- Coeficiente de ajuste y análisis de residuales.
-- Criterios de información AIC y BIC.
-- Cumplimiento de normalidad, homocedasticidad y no correlación.
+Los modelos propuestos tienen coeficientes estimados estadísticamente significativos, sin embargo, al analizar el ajuste y los residuales, los mejores modelos fueron los basados en duración y frecuencia cardíaca, esto fue respaldado por AIC y BIC, donde el mejor AIC y BIC fue para el modelo basado en duración y el segundo mejor el basado en frecuencia cardíaca, por lo tanto, decidimos descartar el modelo basado en temperatura corporal.
 
-Encontramos que los modelos propuestos tienen coeficientes estimados estadísticamente significativos, sin embargo, al analizar el ajuste y los residuales, los mejores modelos fueron los basados en duración y frecuencia cardíaca, esto fue respaldado por el AIC y BIC de los modelos, donde el mejor AIC y BIC fue para el modelo basado en duración y el segundo mejor el basado en frecuencia cardíaca, por lo tanto, decidimos descartar el modelo basado en temperatura corporal.
+De los modelos basados en duración y frecuencia cardiaca, ninguno cumplió satisfactoriamente los supuestos, particularmente, presentan problemas graves de heterocedasticidad. Al estimar el parámetro $\lambda$ de Boxcox, para el modelo basado en duración se obtuvo $\lambda = 0.5$ y para el basado en frecuencia cardiaca se obtuvo $\lambda = 0.6$. Por lo tanto, dado que $\lambda = 0.5$ tiene una buena interpretación y fue el obtenido del mejor candidato de variable explicatoria, decimos transformar a las calorías obteniendo su raíz cuadrada (la cual no es la transformación original de boxcox, pero es una combinación lineal de ella).
 
-De los modelos basados en duración y frecuencia cardiaca, ninguno cumplió satisfactoriamente los supuestos, particularmente, presentan problemas graves de heterocedasticidad. Al estimar el parámetro $\lambda$ de Boxcox, para el modelo basado en duración se obtuve $\lambda = 0.5$ y para el basado en frecuencia cardiaca se obtuvo $\lambda = 0.6$. Por lo tanto, dado que $\lambda = 0.5$ tiene una buena interpretación y fue el obtenido del mejor candidato de variable explicatoria, decimos transformar a las calorías obteniendo su raíz cuadrada (la cual no es la transformación original de boxcox, pero es una combinación lineal de ella).
+Una vez aplicada la transformación, comparamos dos modelos: la raíz cuadrada del gasto calórico explicado por la duración de la rutina vs la frecuencia cardiaca. Encontramos que el mejor modelo en términos de AIC, BIC, ajuste y residuales es el modelo basado en duración, por lo que es el modelo seleccionado que explicaremos a continuación.
 
-Una vez aplicada la transformación, planteamos dos modelos finalistas: la raíz cuadrada del gasto calórico explicado por la duración de la rutina vs la frecuencia cardiaca. 
+## 2.2 Explicación del modelo.
 
-Nuevamente, analizamos significancia estadística, ajuste, residuales, AIC, BIC y cumplimiento de supuestos. Encontramos que el mejor modelo en términos de AIC, BIC, ajuste y residuales es el modelo basado en duración, por lo que es el modelo seleccionado que explicaremos a continuación.
+El modelo posee un intercepto estimado de 2.1863 y una $\hat{\beta_1}$ estimada de 0.4216, ambos con p-valor menor a 2x$10^{-16}$, lo que indica una alta significancia estadística. La interpretación es: al aumentar un minuto en la rutina de ejercicios, la raiz cuadrada del gasto calórico aumenta en 0.42 unidades. 
 
-## 3.2 Explicación del modelo.
+Notemos dos cosas, la primera es que el intercepto cumple la función de dar soporte a la recta, ya que una rutina de 0 minutos no tiene sentido; la segunda, la modelación se transfiere del gasto calórico a la raíz cuadrada del gasto calórico.
 
-El modelo posee un intercepto estimado de 2.1863 y una $\hat{\beta_1}$ estimada de 0.4216, ambos con p-valor menor a 2x$10^{-16}$, lo que indica una alta significancia estadística. Esto significa que al aumentar un minuto en la rutina de ejercicios, la raiz cuadrada del gasto calórico aumenta en 0.42 unidades. 
-
-Notemos dos cosas, la primera es que el intercepto cumple la función de dar soporte a la recta, ya que una rutina de 0 minutos no tiene sentido; la segunda, el incremento es sobre la raíz cuadrada del gasto calórico y no sobre el gasto calórico como tal.
-
-## 3.3 Ajuste del modelo
+## 2.3 Ajuste del modelo
 
 El coeficiente de determinación es de 0.9518, el ajustado es de 0.9515, significa que la duración explica en un 95% el comportamiento de la raíz cuadrada del gasto calórico, y tiene sentido que no varíen entre sí, ya que el coeficiente de determinación ajustado penaliza por añadir variables, pero al ser un modelo simple, no existe tan penalización. 
 
-El error estándar residual estimado es de 0.8204, indicando una desviación estándar de los errores de $\pm0.8204$, el residual mínimo posee una valor de -3.08537 y el máximo de 2.75438, con una media de -0.02556, bastante cercana a cero. Debemos considerar que la unidad de medida es la raíz cuadrada del gasto calórico, en general, los residuales presentan una variación mínima, y el 50% de los errores son cercanos a cero.
+El error estándar residual estimado es de 0.8204, indicando una desviación estándar de los errores de $\pm0.8204$, el residual mínimo posee una valor de -3.08537 y el máximo de 2.75438, con una media de -0.02556, esto significa que los residuales presentan una variación mínima, y el 50% de los errores son cercanos a cero.
 
-## 3.4 Evaluación de supuestos
+## 2.4 Evaluación de supuestos
 
 ```{r echo=FALSE}
 
@@ -388,11 +366,11 @@ knitr::kable(
 
 ```
 
-El modelo no cumple con el supuesto de normalidad ni con el de homocedasticidad, sin embargo, no es un resultado catastrófico, los p-valores no son excesivamente pequeños, de hecho, aumentando el margen con $\alpha = 0.01$ el modelo quedaría aprobado. Aún así, no puede ignorarse que, aun aplicando una transformación al gasto calórico, el modelo sigue sin ser homocedástico.
+El modelo no cumple con el supuesto de normalidad ni con el de homocedasticidad, sin embargo, no es un resultado catastrófico, notemos que, aumentando el margen con $\alpha = 0.01$ el modelo quedaría aprobado. Aún así, no puede ignorarse que, aun aplicando una transformación al gasto calórico, el modelo sigue sin ser homocedástico.
 
-En general, el modelo es bastante bueno, los coeficientes estimados son altamente significativos, el ajuste y los residuales son excelentes y en criterios AIC y BIC es superior frente a otros modelos simples. Que no haya cumplido el supuesto de homocedasticidad revela que una sola variable no es suficiente para explicar el comportamiento del gasto calórico, o bien, que el comportamiento no puede ser explicado con el modelo clásico.
+En general, el modelo es bastante bueno, los coeficientes estimados son altamente significativos, el ajuste y los residuales son excelentes y en criterios AIC y BIC es superior frente a otros modelos simples. Que no haya cumplido el supuesto de homocedasticidad revela que una sola variable no es suficiente para explicar el comportamiento del gasto calórico, o bien, que el comportamiento no puede ser explicado con un modelo clásico de regresión.
 
-## 3.5. Intervalos de confianza (95 %)
+## 2.5. Intervalos de confianza (95 %)
 
 ```{r echo=FALSE}
 
@@ -436,7 +414,7 @@ ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
   theme_minimal()
 ```
 
-## 3.6. Intervalos para respuesta media y predicción
+## 2.6. Intervalos para respuesta media y predicción
 
 ```{r echo=FALSE}
 nuevos_dur <- data.frame(Duration = seq(
@@ -528,13 +506,11 @@ bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")] <-
 
 ```
 
-# 4. Modelo de Regresión Lineal Múltiple
+# 3. Modelo de Regresión Lineal Múltiple
 
-## 4.1. Selección de variables
+## 3.1. Selección de variables
 
 Para una selección inicial definimos un modelo utilizando todas las variables. Mediante un stepwise AIC con dirección hacia atras verificamos que eliminando la varible *Gender* obtenemos un menor AIC que el original. Posiblemente debido a que realmente el género no afecta fuertemente en la correlación del resto de variables como se vio en la matriz de correlación. 
-
-## 4.2. Ajuste del modelo
 
 ```{r}
 mod <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)
@@ -542,7 +518,7 @@ mod_summary <- summary(mod)
 
 ```
 
-## 4.3. Evaluación de multicolinealidad del modelo
+## 3.2. Evaluación de multicolinealidad del modelo
 
 Desde la matriz de correlación obteniamos distinto grupos de variables, lo cual es posible que se presnete alta multicolinealidad. Obtenemos los siguientes valores de inflación de la varianza para cada variable.
 
@@ -662,7 +638,7 @@ kable(
 
 A excepción del modelo 2, basta quitar una sola variable para eliminar multicolinealidad. El modelo escogido será justificado en la siguiente sección ya que los supuestos del modelo son afectados fuertemente dependiendo de la combinación de estas tres variables especificamente.
 
-## 4.4. Análisis de residuos
+## 3.3. Análisis de residuos
 
 Haciendo prueba y error con cada uno de los modelos se encontró cuestiones muy interesantes sobre la relación entre *Duration*, *Heart_Rate* y *Body_Temp* y el cumplimiento de los supuestos.
 
@@ -775,7 +751,7 @@ Podemos observar que no podemos rechazar la autocorrelación de los errores resi
 
 Este modelo nos permitió medir el gasto calórico por medio del índice de masa corporal, la frecuencia cardiaca y la temperatura corporal a la hora del ejercicio. 
 
-## 4.5. Valores influyentes
+## 3.4. Valores influyentes
 
 ```{r}
 
@@ -805,7 +781,7 @@ La observación 76 mantiene un perfil físico normal, pero con una un grado mín
 
 Por último, la observación 75 tenia un alto nivel de leverage lo que podria indicar una combinación poco común de variables pero sigue la tendencia del modelo. Por lo que se considera un punto raro, pero bien explicado. 
 
-# 5. Conclusiones
+# 4. Conclusiones
 
 Los modelos finalistas fueron:
 

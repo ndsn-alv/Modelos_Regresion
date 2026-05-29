@@ -532,7 +532,7 @@ bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")] <-
 
 ## 4.1. Selección de variables
 
-Para una selección inicial definimos un modelo utilizando todas las variables. Mediante un stepwise AIC con dirección hacia atras verificamos que eliminando la varible *Gender* obtenemos un menor AIC que el original. Posiblemente debido a que realmente el género no afecta fuertemente en la correlación del resto de variables como se vio en la matriz de correalación. 
+Para una selección inicial definimos un modelo utilizando todas las variables. Mediante un stepwise AIC con dirección hacia atras verificamos que eliminando la varible *Gender* obtenemos un menor AIC que el original. Posiblemente debido a que realmente el género no afecta fuertemente en la correlación del resto de variables como se vio en la matriz de correlación. 
 
 ## 4.2. Ajuste del modelo
 
@@ -540,25 +540,7 @@ Para una selección inicial definimos un modelo utilizando todas las variables. 
 mod <- lm(Calories ~ Age + Height + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)
 mod_summary <- summary(mod)
 
-
-coeffs <- data.frame(
-  mod_summary$coefficients
-)
-
-kable(
-  coeffs,
-  caption = "Resumen del modelo",
-  digits = 6
-)
-
 ```
-Adicionalmente obtenemos estas caracteristicas:
-
-- Multiple R-squared: 0.9723
-- Adjusted R-squared: 0.9713
-- p-valor conjunto: 0
-
-Esto nos indica que obtenemos un modelo múltiple estadísticamente significativo.
 
 ## 4.3. Evaluación de multicolinealidad del modelo
 
@@ -578,7 +560,7 @@ kable(
 
 Podemos ver que el modelo tiene multicolinealidad fuerte en las variables *Height*, *Weight* y *BMI*, donde directamente el índice de masa corporal es una relación entre la altura y el peso lo cual explica la alta correlación entre este grupo de variables. Por otro lado, variables como *Duration*, *Heart_Rate* y *Body_Temp* presentan multicolinealidad moderada. Igualmente por la matriz de correlación observamos una correlación fuerte entre este otro grupo de variables. Por último, la variable *Age* mantiene el VIF mas pequeño, consistente con su nula o débil correlación con el resto de las variables.
 
-Buscamos ajustar un nuevo modelo mediante la eliminación de algunas de las variables de grupos correlacionados. Primero nos enfocamos en eliminar la multicolinealidad mas fuerte con las variables de masa corporal. Como resultado obtenemos.
+Buscamos ajustar un modelo eliminando algunas de las variables de grupos correlacionados. Primero nos enfocamos en eliminar la multicolinealidad mas fuerte con las variables de masa corporal. Como resultado obtenemos.
 
 ```{r}
 mod1 <- lm(Calories ~ Age + Weight + BMI + Duration + Heart_Rate + Body_Temp, calories)

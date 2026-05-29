@@ -854,8 +854,31 @@ Este modelo nos permitió medir el gasto calórico por medio del índice de masa
 
 ```{r}
 
-influencePlot(mod)
+ip <- influencePlot(mod)
+
+kable(
+  ip,
+  caption = "Valores influyentes",
+  digits  = 5 
+)
 ```
+
+De las 200 observaciones tenemos 4 valores que podrian influir en nuestro modelo. La observación 1 y 76 son las que mayor influencia tienen en el modelo, son las observaciones con mayor distancia de Cook y leverage. La observación 4 tiene una distancia de Cook moderada. Lo cual podría indicar un valor borderline, es decir, un valor con influencia moderada. Por otro lado, la observación 75 no se considera influyente por su baja distancia de Cook (cercana a cero). Sin embargo, esta resalta por su alto leverage. Lo cual indica que la observación se encuentra en algún punto extremo o raro en sentido de las variables explicativas, pero explica la variable respuesta consistentemente con el modelo. Si observamos a estas 4 observaciones en la tabla podemos ver
+
+```{r}
+calories_fltd <- calories[c(1,4,75,76),-10]
+
+kable(
+  calories_fltd,
+  caption = "Observaciones influyentes"
+)
+```
+
+Vemos que la observación 1 y 4 tiene perfiles muy similares, con la mayor diferencia siendo el peso y la altura de la persona 1, es muy alta. Como el indice de masa corporal es directamente una relación entre el peso y la altura es posible que el modelo no capte bien estas diferencias (recordando que solo se incluye el BMI en el modelo) ya que ambas personas tienen un indice de masa corporal similar y a su vez causando una mala estimación de las calorías para esta persona en específico. 
+
+La observación 76 mantiene un perfil físico normal, pero con una un grado mínimo de esfuerzo físico (1 minuto de ejercicio) resultando en un gasto calórico muy pequeño. Lo cual podría sustentarse como una observación no comparable ya que se mide el gasto calórico por actividad física y esta persona no la realizó correctamente. Se considera como el valor mas problemático del modelo.
+
+Por último, la observación 75 tenia un alto nivel de leverage lo que podria indicar una combinación poco común de variables pero sigue la tendencia del modelo. Por lo que se considera un punto raro, pero bien explicado. 
 
 # 6. Comparación de modelos
 

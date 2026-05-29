@@ -859,4 +859,21 @@ influencePlot(mod)
 
 # 6. Comparación de modelos
 
+Los modelos finalistas fueron:
+
+- Simple: Raíz cuadrada del gasto calórico explicado a través de la duración.
+- Múltiple: Gasto calórico explicado por el BMI, el cuadrado de la frecuencia cardiaca y el cuadrado de la temperatura corporal.
+
+En términos de ajuste, el modelo simple logra explicar un 95.1% de la raíz del gasto calórico, mientras que el modelo múltiple explica entre un 89.24% y un 89.41% del gasto calórico. Notemos que el coeficiente de determinación ajustado es muy cercano al coeficiente de determinación "simple", por lo que la penalización por incluir múltiples variables es mínima.
+
+El análisis de residuales no se puede realizar de manera directa, ya que el gasto calórico no se encuentra en la misma escala en ambos modelos, mientras que en el modelo simple, los residuales se explican en términos de la raiz cuadrada, los residuales del modelo múltiple están en su escala original.
+
+Sin embargo, recordemos que los residuales del modelo simple fueron bastante buenos, ya que tenían muy poca variabilidad respecto de la unidad de medida, por otro lado, el modelo múltiple también tiene excelentes residuales, con un 50% de los residuos siendo cercanos a cero, residuo mínimo de -50.86 calorías, máximo de 66.70 calorias y un error residual estándar de 21.11 calorías, este modelo también presenta una variabilidad mínima.
+
+En términos de significancia estadística, el modelo simple tiene una alta significancia en los coeficientes estimados, con p-valores de prácticamente cero, el modelo múltiple presenta el mismo resultado, exceptuando el coeficiente estimado para el BMI, que obtuvo un p-valor de 0.199, haciéndolo no significativo, no obstante, la prueba F del modelo múltiple obtiene un valor de prácticamente cero, por lo que el modelo múltiple en su conjunto es significativo.
+
+En términos de supuestos cumplidos y considerando una confianza $\alpha = 0.05$, el modelo simple presenta problemas de homocedasticidad y normalidad, debido a las observaciones que se tienen cuando se aumenta la duración de la rutina, que comienzan a ser cada vez más volátiles, en cambio, el modelo múltiple cumple con todos los supuestos, lo que lo hace estadísticamente válido.
+
+Finalmente, debe hacerse la observación que los criterios de AIC y BIC no fueron considerados, pues el gasto calórico se encuentra en diferente escala, volviendo los modelos no comparables bajo estos criterios.
+
 # 7. Conclusiones

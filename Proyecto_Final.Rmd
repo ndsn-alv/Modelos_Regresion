@@ -394,19 +394,19 @@ Una vez aplicada la transformación, planteamos dos modelos finalistas: la raíz
 
 Nuevamente, analizamos significancia estadística, ajuste, residuales, AIC, BIC y cumplimiento de supuestos. Encontramos que el mejor modelo en términos de AIC, BIC, ajuste y residuales es el modelo basado en duración, por lo que es el modelo seleccionado que explicaremos a continuación.
 
-# 4.2 Explicación del modelo.
+## 4.2 Explicación del modelo.
 
 El modelo posee un intercepto estimado de 2.1863 y una $\hat{\beta_1}$ estimada de 0.4216, ambos con p-valor menor a 2x$10^{-16}$, lo que indica una alta significancia estadística. Esto significa que al aumentar un minuto en la rutina de ejercicios, la raiz cuadrada del gasto calórico aumenta en 0.42 unidades. 
 
 Notemos dos cosas, la primera es que el intercepto cumple la función de dar soporte a la recta, ya que una rutina de 0 minutos no tiene sentido; la segunda, el incremento es sobre la raíz cuadrada del gasto calórico y no sobre el gasto calórico como tal.
 
-# 4.3 Ajuste del modelo
+## 4.3 Ajuste del modelo
 
 El coeficiente de determinación es de 0.9518, el ajustado es de 0.9515, significa que la duración explica en un 95% el comportamiento de la raíz cuadrada del gasto calórico, y tiene sentido que no varíen entre sí, ya que el coeficiente de determinación ajustado penaliza por añadir variables, pero al ser un modelo simple, no existe tan penalización. 
 
 El error estándar residual estimado es de 0.8204, indicando una desviación estándar de los errores de $\pm0.8204$, el residual mínimo posee una valor de -3.08537 y el máximo de 2.75438, con una media de -0.02556, bastante cercana a cero. Debemos considerar que la unidad de medida es la raíz cuadrada del gasto calórico, en general, los residuales presentan una variación mínima, y el 50% de los errores son cercanos a cero.
 
-# 4.4 Evaluación de supuestos
+## 4.4 Evaluación de supuestos
 
 ```{r echo=FALSE}
 
@@ -439,7 +439,7 @@ En general, el modelo es bastante bueno, los coeficientes estimados son altament
 
 ## 4.5. Intervalos de confianza (95 %)
 
-```{r}
+```{r echo=FALSE}
 
 coef_d <- coef(mod_d_bc)
 ic_d   <- confint(mod_d_bc, level = 0.95)
@@ -483,7 +483,7 @@ ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
 
 ## 4.6. Intervalos para respuesta media y predicción
 
-```{r}
+```{r echo=FALSE}
 nuevos_dur <- data.frame(Duration = seq(
   min(calories$Duration), 
   max(calories$Duration), 
@@ -854,8 +854,31 @@ Este modelo nos permitió medir el gasto calórico por medio del índice de masa
 
 ```{r}
 
-influencePlot(mod)
+ip <- influencePlot(mod)
+
+kable(
+  ip,
+  caption = "Valores influyentes",
+  digits  = 5 
+)
 ```
+
+De las 200 observaciones tenemos 4 valores que podrian influir en nuestro modelo. La observación 1 y 76 son las que mayor influencia tienen en el modelo, son las observaciones con mayor distancia de Cook y leverage. La observación 4 tiene una distancia de Cook moderada. Lo cual podría indicar un valor borderline, es decir, un valor con influencia moderada. Por otro lado, la observación 75 no se considera influyente por su baja distancia de Cook (cercana a cero). Sin embargo, esta resalta por su alto leverage. Lo cual indica que la observación se encuentra en algún punto extremo o raro en sentido de las variables explicativas, pero explica la variable respuesta consistentemente con el modelo. Si observamos a estas 4 observaciones en la tabla podemos ver
+
+```{r}
+calories_fltd <- calories[c(1,4,75,76),-10]
+
+kable(
+  calories_fltd,
+  caption = "Observaciones influyentes"
+)
+```
+
+Vemos que la observación 1 y 4 tiene perfiles muy similares, con la mayor diferencia siendo el peso y la altura de la persona 1, es muy alta. Como el indice de masa corporal es directamente una relación entre el peso y la altura es posible que el modelo no capte bien estas diferencias (recordando que solo se incluye el BMI en el modelo) ya que ambas personas tienen un indice de masa corporal similar y a su vez causando una mala estimación de las calorías para esta persona en específico. 
+
+La observación 76 mantiene un perfil físico normal, pero con una un grado mínimo de esfuerzo físico (1 minuto de ejercicio) resultando en un gasto calórico muy pequeño. Lo cual podría sustentarse como una observación no comparable ya que se mide el gasto calórico por actividad física y esta persona no la realizó correctamente. Se considera como el valor mas problemático del modelo.
+
+Por último, la observación 75 tenia un alto nivel de leverage lo que podria indicar una combinación poco común de variables pero sigue la tendencia del modelo. Por lo que se considera un punto raro, pero bien explicado. 
 
 # 6. Comparación de modelos
 

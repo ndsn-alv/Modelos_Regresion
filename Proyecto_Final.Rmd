@@ -334,12 +334,6 @@ evaluar_supuestos(mod_hr_bc)
 
 ```
 
-Para seleccionar la variable explicativa, nos apoyamos en los siguientes criterios:
-
-- Significancia de los coeficientes estimados.
-- Coeficiente de ajuste y análisis de residuales.
-- Criterios de información AIC y BIC.
-- Cumplimiento de normalidad, homocedasticidad y no correlación.
 
 Los modelos propuestos tienen coeficientes estimados estadísticamente significativos, sin embargo, al analizar el ajuste y los residuales, los mejores modelos fueron los basados en duración y frecuencia cardíaca, esto fue respaldado por AIC y BIC, donde el mejor AIC y BIC fue para el modelo basado en duración y el segundo mejor el basado en frecuencia cardíaca, por lo tanto, decidimos descartar el modelo basado en temperatura corporal.
 

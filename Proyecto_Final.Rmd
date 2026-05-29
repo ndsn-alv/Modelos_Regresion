@@ -479,6 +479,7 @@ ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
               color = "red")+
   labs(title = "Raiz Calorias ~ Frecuencia Cardiaca")+
   theme_minimal()
+```
 
 ## 4.6. Intervalos para respuesta media y predicción
 
@@ -570,7 +571,7 @@ bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")] <-
   bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")]^2
 ############################################################################
 
-
+```
 
 # 5. Modelo de Regresión Lineal Múltiple
 

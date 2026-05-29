@@ -72,7 +72,7 @@ kable(
 
 ## 1.2. Matriz de correlación:
 
-```{r}
+```{r, fig.width=6, fig.height=3}
 
 cal_male <- calories %>% filter(Gender == "male")
 cal_male <- cal_male[,-2]
@@ -102,6 +102,8 @@ corrplot(cor(cal_female),
          mar = c(0,0,2,0))
          
 ```
+
+
 Se pueden observar tres grupos de variables correlacionadas entre si para ambos género. Consisten en:
 
 - Grupo 1: *Calories, Duration, Heart_Rate, Body_Temp*
@@ -395,28 +397,12 @@ tabla_hr <- data.frame(
 )
 
 kable(tabla_d, digits = 4, caption = "Coeficientes e IC - sqrt(Calories) ~ Duration")
-kable(tabla_hr, digits = 4, caption = "Coeficientes e IC - sqrt(Calories) ~ Heart_Rate")
 
-ggplot(data = calories, aes(x = Duration, y = Calories_T))+
-  geom_point(alpha = 0.6)+
-  geom_smooth(method = "lm",
-              se = TRUE,
-              color = "red")+
-  labs(title = "Raiz Calorias ~ Duración")+
-  theme_minimal()
-
-ggplot(data = calories, aes(x = Heart_Rate, y = Calories_T))+
-  geom_point(alpha = 0.6)+
-  geom_smooth(method = "lm",
-              se = TRUE,
-              color = "red")+
-  labs(title = "Raiz Calorias ~ Frecuencia Cardiaca")+
-  theme_minimal()
 ```
 
 ## 2.6. Intervalos para respuesta media y predicción
 
-```{r echo=FALSE}
+```{r, fig.width=6, fig.height=3}
 nuevos_dur <- data.frame(Duration = seq(
   min(calories$Duration), 
   max(calories$Duration), 
@@ -451,7 +437,7 @@ ggplot() +
              aes(x = Duration, y = Calories_T), 
              alpha = 0.6) +
   labs(title = "Raíz(Calorías) ~ Duración",
-       subtitle = "Bandas: gris = predicción, azul = confianza de la media",
+       subtitle = "Bandas: gris = Predicción, azul = Respuesta media",
        y = "sqrt(Calories)", x = "Duration") +
   theme_minimal()
 
@@ -459,50 +445,6 @@ ggplot() +
 bandas_orig <- bandas_dur
 bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")] <- 
   bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")]^2
-####################################################################################
-nuevos_dur <- data.frame(Heart_Rate = seq(
-  min(calories$Heart_Rate), 
-  max(calories$Heart_Rate), 
-  length.out = 100
-))
-
-
-pred_conf <- predict(mod_hr_bc, newdata = nuevos_dur, interval = "confidence")
-pred_pred <- predict(mod_hr_bc, newdata = nuevos_dur, interval = "prediction")
-
-
-bandas_dur <- cbind(nuevos_dur, pred_conf, pred_pred)
-names(bandas_dur) <- c("Heart_Rate", "fit", "lwr_conf", "upr_conf", 
-                       "fit2", "lwr_pred", "upr_pred")
-
-
-ggplot() +
-  # Banda de predicción (la más amplia, primero para que quede detrás)
-  geom_ribbon(data = bandas_dur, 
-              aes(x = Heart_Rate, ymin = lwr_pred, ymax = upr_pred),
-              fill = "gray80", alpha = 0.4) +
-  # Banda de confianza (más estrecha)
-  geom_ribbon(data = bandas_dur, 
-              aes(x = Heart_Rate, ymin = lwr_conf, ymax = upr_conf),
-              fill = "blue", alpha = 0.3) +
-  # Recta de regresión
-  geom_line(data = bandas_dur, 
-            aes(x = Heart_Rate, y = fit), 
-            color = "red", size = 1) +
-  # Puntos observados
-  geom_point(data = calories, 
-             aes(x = Heart_Rate, y = Calories_T), 
-             alpha = 0.6) +
-  labs(title = "Raíz(Calorías) ~ Duración",
-       subtitle = "Bandas: gris = predicción, azul = confianza de la media",
-       y = "sqrt(Calories)", x = "Heart_Rate") +
-  theme_minimal()
-
-
-bandas_orig <- bandas_dur
-bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")] <- 
-  bandas_orig[, c("fit", "lwr_conf", "upr_conf", "lwr_pred", "upr_pred")]^2
-############################################################################
 
 ```
 
@@ -708,7 +650,7 @@ Visualmente, todo se ve excelente. En cuanto a las pruebas, absolutamente no hay
 
 **Homocedasticidad**. Se muestra el gráfico de dispersión de residuales contra valores ajustados, así como las pruebas formales de homocedasticidad.
 
-```{r}
+```{r, fig.width=6, fig.height=3}
 df <- data.frame(
   fitted = fitted(mod),
   resid = residuals(mod)
@@ -753,7 +695,7 @@ Este modelo nos permitió medir el gasto calórico por medio del índice de masa
 
 ## 3.4. Valores influyentes
 
-```{r}
+```{r, fig.width=6, fig.height=3}
 
 ip <- influencePlot(mod)
 
